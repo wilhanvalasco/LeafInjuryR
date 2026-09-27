@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^LeafInjuryR\.Rproj$
+^DEVELOPMENT_REPORT\.md$
+^check\.log$
+^check_cran\.log$
