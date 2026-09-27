@@ -36,3 +36,5 @@ RoxygenNote: 7.3.1
 NeedsCompilation: no
 Author: Wilhan Valasco dos Santos [aut, cre, cph]
 Maintainer: Wilhan Valasco dos Santos <wilhanvalasco@hotmail.com>
+URL: https://github.com/wilhanvalasco/LeafInjuryR
+BugReports: https://github.com/wilhanvalasco/LeafInjuryR/issues
