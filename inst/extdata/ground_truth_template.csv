@@ -1,0 +1,3 @@
+image,reference_leaf_mask,reference_injury_mask
+images/leaf01.jpg,masks/leaf01_leaf.png,masks/leaf01_injury.png
+images/leaf02.jpg,masks/leaf02_leaf.png,

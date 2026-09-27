@@ -1,0 +1,10 @@
+.DS_Store
+*.tar.gz
+*.Rcheck/
+inst/doc/
+.Rproj.user/
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.quarto

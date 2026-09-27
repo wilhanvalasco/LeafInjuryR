@@ -1,0 +1,38 @@
+Package: LeafInjuryR
+Type: Package
+Title: Quantification of Visual Leaf Injury Patterns from Digital Images
+Version: 0.1.0
+Authors@R: person(
+    given = "Wilhan Valasco",
+    family = "dos Santos",
+    email = "wilhanvalasco@hotmail.com",
+    role = c("aut", "cre", "cph")
+    )
+Description: Classical image-processing pipeline to quantify visual injury
+    patterns on detached leaves photographed against a contrasting background.
+    The pipeline separates three steps: (1) leaf/background segmentation,
+    (2) classification of leaf tissue (healthy/injured, or optionally
+    healthy/chlorotic/necrotic/other) using only pixels inside the leaf mask,
+    and (3) quantification of injured area as a percentage of leaf area.
+    Includes automatic and manual cropping, optional conservative illumination
+    normalization, connected-component cleaning, quality-control flags,
+    comparison of segmentation methods, validation metrics against manually
+    produced reference masks (IoU, Dice, sensitivity, specificity, precision,
+    F1), batch processing with CSV/PNG export, full parameter records for
+    reproducibility and a local 'shiny' interface. The package quantifies
+    visual patterns only; it does not diagnose pathogens, diseases,
+    nutritional disorders or phytotoxicity. All processing is local.
+License: GPL (>= 3)
+Encoding: UTF-8
+Language: en-US
+Depends: R (>= 4.1.0)
+Imports: EBImage, graphics, grDevices, stats, tools, utils
+Suggests: shiny (>= 1.7.0), bslib, DT, testthat (>= 3.0.0), knitr,
+    rmarkdown
+biocViews:
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1
+NeedsCompilation: no
+Author: Wilhan Valasco dos Santos [aut, cre, cph]
+Maintainer: Wilhan Valasco dos Santos <wilhanvalasco@hotmail.com>
