@@ -8,97 +8,65 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
 ```
 
 ## Software that works is not a validated method
 
-LeafInjuryR runs, produces masks and numbers, and passes its unit tests.
-This demonstrates *computational* correctness (e.g. the denominator is leaf
-pixels, masks are consistent, percentages add up). It does **not**
-demonstrate that the injury percentages agree with expert assessment for a
-given species, camera, background and lighting. That requires comparison
-with **ground truth**: masks drawn manually by trained people.
+Passing unit tests shows computational correctness (the denominator is leaf
+pixels, masks are consistent, percentages add up). It does **not** show that
+injury percentages agree with expert assessment for a given species, camera
+and lighting. That requires **ground truth**: masks drawn manually.
 
-The two example images shipped with the package have no reference masks and
-must not be used as ground truth.
+The example images shipped with the package have no reference masks and must
+not be used as ground truth.
 
-## Ground truth
+## Reference masks
 
-For each validation image produce, in an image editor (GIMP, Krita,
-ImageJ/Fiji, CVAT, Label Studio, ...):
+For each validation photograph draw, in GIMP, Krita, ImageJ/Fiji, CVAT or
+similar:
 
-* `reference_leaf_mask`: white = leaf, black = everything else;
-* `reference_injury_mask`: white = injured tissue, black = everything else.
+* a **leaf mask** (white = leaf, black = everything else);
+* an **injury mask** (white = injured tissue).
 
-Rules: same width and height as the original photograph (masks are never
-resized silently); save as PNG or TIFF (JPEG compression changes edges);
-draw on the original, not on a cropped or resized copy; document the
-criteria used to call tissue injured; ideally have more than one annotator
-to estimate inter-annotator variability.
-
-Then list them in a CSV (template:
-`system.file("extdata", "ground_truth_template.csv", package = "LeafInjuryR")`):
-
-```
-image,reference_leaf_mask,reference_injury_mask
-images/leaf01.jpg,masks/leaf01_leaf.png,masks/leaf01_injury.png
-```
-
-and read it with `read_ground_truth()`.
+Use the size of the original photograph, save as PNG or TIFF, document the
+criteria used and, ideally, use more than one annotator.
 
 ## Metrics
 
-With TP, FP, FN and TN pixel counts (positive = leaf, or = injured):
+| Metric | Formula |
+|---|---|
+| IoU (Jaccard) | TP / (TP + FP + FN) |
+| Dice (= F1 for masks) | 2TP / (2TP + FP + FN) |
+| Sensitivity | TP / (TP + FN) |
+| Specificity | TN / (TN + FP) |
+| Precision | TP / (TP + FP) |
 
-| Metric | Formula | Meaning |
-|---|---|---|
-| IoU (Jaccard) | TP / (TP + FP + FN) | overlap relative to union |
-| Dice | 2TP / (2TP + FP + FN) | overlap; equals F1 for masks |
-| Sensitivity (recall) | TP / (TP + FN) | share of true positives found |
-| Specificity | TN / (TN + FP) | share of true negatives kept |
-| Precision | TP / (TP + FP) | share of detections that are correct |
-| Accuracy | (TP + TN) / N | inflated when negatives dominate |
+`validate_leaf()` evaluates separately (A) leaf x background and (B)
+healthy x injured inside the leaf, and reports the error of the injury
+percentage. Without references it reports quality indicators only.
 
-Evaluate separately:
-
-* **A) leaf x background** - is the leaf delimited correctly?
-* **B) healthy x injured** - within the leaf, is tissue classified correctly?
-  `evaluate_leaf_analysis()` restricts (B) to the leaf so that background
-  pixels do not inflate specificity or accuracy.
-
-Also report the error of the final number, `predicted - reference` injured
-percent, and its agreement across images (e.g. Bland-Altman analysis,
-concordance correlation).
-
-## Worked example (synthetic, known truth)
+## Worked example (synthetic image with known truth)
 
 ```{r}
 library(LeafInjuryR)
-dir <- file.path(tempdir(), "gt_demo"); dir.create(dir, showWarnings = FALSE)
-syn <- make_synthetic_leaf(chlorotic = TRUE)
-write_image_png(syn$image, file.path(dir, "leaf.png"))
-write_mask_png(syn$leaf_mask, file.path(dir, "leaf_leafmask.png"))
-write_mask_png(syn$injury_mask, file.path(dir, "leaf_injurymask.png"))
-
-man <- ground_truth_manifest(file.path(dir, "leaf.png"),
-                             file.path(dir, "leaf_leafmask.png"),
-                             file.path(dir, "leaf_injurymask.png"))
-validate_ground_truth(man)[, c("image", "label", "iou", "dice", "sensitivity",
-                               "specificity", "precision", "injured_percent_error")]
+syn <- LeafInjuryR:::make_synthetic_leaf(chlorotic = TRUE)
+res <- analyze_leaf(syn$image)
+v <- validate_leaf(res, reference_leaf_mask = syn$leaf_mask,
+                   reference_injury_mask = syn$injury_mask)
+v
+plot(v)
 ```
 
-Synthetic images only check the software; they say nothing about real
-photographs.
+Synthetic images only test the software.
 
 ## Recommended protocol
 
-1. Collect a validation set representative of the conditions of use
-   (species, cultivars, injury levels from 0 to high, cameras, days).
-2. Split into a *calibration* subset (to tune thresholds in `leaf_config()`)
-   and an independent *test* subset (to report performance). Never report
-   performance on the images used for tuning.
-3. Report IoU/Dice for (A) and (B), sensitivity, specificity, and the
-   error of injured percent, with the number of images and annotators.
-4. Freeze the configuration (`get_analysis_parameters()`) and package
-   version used in the study.
+1. Collect a representative validation set (species, cultivars, injury from
+   0 to high, cameras, days).
+2. Tune thresholds (`params`) on a calibration subset; report performance on
+   an independent test subset.
+3. Report IoU/Dice for (A) and (B), sensitivity, specificity and the error
+   of injury percent (e.g. Bland-Altman), with number of images and
+   annotators.
+4. Freeze the configuration (`result$parameters$config`) and package version.

@@ -2,9 +2,7 @@
 #'
 #' @param multiclass Logical.
 #' @return Named character vector of hex colours for non-background classes.
-#' @examples
-#' leaf_class_colors(TRUE)
-#' @export
+#' @noRd
 leaf_class_colors <- function(multiclass = FALSE) {
   if (isTRUE(multiclass)) {
     c(healthy = "#1FA83A", chlorotic = "#FFD500", necrotic = "#E31A1C", other = "#C21BFF")
@@ -29,11 +27,7 @@ leaf_class_colors <- function(multiclass = FALSE) {
 #' @param multiclass Logical; inferred when `NULL`.
 #' @param outline Draw the leaf-mask outline (logical).
 #' @return A colour `Image`.
-#' @examples
-#' syn <- make_synthetic_leaf()
-#' tis <- classify_leaf_tissue(syn$image, syn$leaf_mask)
-#' ov <- create_leaf_overlay(syn$image, tis$class_map, alpha = 0.5)
-#' @export
+#' @noRd
 create_leaf_overlay <- function(image, class_map = NULL, alpha = 0.45, colors = NULL,
                                 multiclass = NULL, outline = TRUE) {
   if (inherits(image, "leaf_analysis")) {
@@ -77,9 +71,7 @@ create_leaf_overlay <- function(image, class_map = NULL, alpha = 0.45, colors = 
 #' @param multiclass Logical; inferred when `NULL`.
 #' @param background Background colour.
 #' @return A colour `Image`.
-#' @examples
-#' class_map_to_image(matrix(c(0L, 1L, 2L, 1L), 2, 2))
-#' @export
+#' @noRd
 class_map_to_image <- function(class_map, multiclass = NULL, background = "#FFFFFF") {
   multiclass <- multiclass %||% any(class_map > 2L)
   cols <- grDevices::col2rgb(c(background, leaf_class_colors(multiclass))) / 255
@@ -92,9 +84,7 @@ class_map_to_image <- function(class_map, multiclass = NULL, background = "#FFFF
 #' Render a logical mask as a black/white image
 #' @param mask Logical matrix.
 #' @return A grayscale `Image` (leaf = white).
-#' @examples
-#' mask_to_image(matrix(c(TRUE, FALSE), 4, 4))
-#' @export
+#' @noRd
 mask_to_image <- function(mask) {
   EBImage::Image(check_mask(mask) * 1, colormode = EBImage::Grayscale)
 }
@@ -110,9 +100,7 @@ mask_to_image <- function(mask) {
 #' @param axes Draw axes.
 #' @param ... Passed to [graphics::title()].
 #' @return `NULL`, invisibly.
-#' @examples
-#' plot_leaf_image(make_synthetic_leaf()$image, main = "Synthetic leaf")
-#' @export
+#' @noRd
 plot_leaf_image <- function(image, main = NULL, axes = FALSE, ...) {
   if (is.matrix(image) || (inherits(image, "Image") && length(dim(image)) == 2L)) {
     m <- if (inherits(image, "Image")) EBImage::imageData(image) else image * 1
@@ -142,7 +130,7 @@ plot_leaf_image <- function(image, main = NULL, axes = FALSE, ...) {
 #' @param ... Unused.
 #' @return `x`, invisibly.
 #' @examples
-#' res <- analyze_leaf(leaf_example_images()[1], crop = "auto")
+#' res <- analyze_leaf(system.file("extdata", "leaf_example_01.jpg", package = "LeafInjuryR"), crop = "auto")
 #' plot(res)
 #' @export
 plot.leaf_analysis <- function(x, ...) {

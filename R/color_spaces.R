@@ -11,9 +11,7 @@
 #'
 #' @param r,g,b Numeric vectors or matrices in \[0, 1\].
 #' @return A list with `L`, `a`, `b`, `chroma`, `hue` (same shape as input).
-#' @examples
-#' rgb_to_lab(0.2, 0.6, 0.1)
-#' @export
+#' @noRd
 rgb_to_lab <- function(r, g, b) {
   lin <- function(u) {
     out <- u / 12.92
@@ -45,9 +43,7 @@ rgb_to_lab <- function(r, g, b) {
 #' @param r,g,b Numeric vectors or matrices in \[0, 1\].
 #' @return A list with `hue` (degrees, 0-360), `saturation` (0-1) and
 #'   `value` (0-1).
-#' @examples
-#' rgb_to_hsv(0.2, 0.6, 0.1)
-#' @export
+#' @noRd
 rgb_to_hsv <- function(r, g, b) {
   mx <- pmax(r, g, b)
   mn <- pmin(r, g, b)
@@ -72,9 +68,7 @@ rgb_to_hsv <- function(r, g, b) {
 #'
 #' @param r,g,b Numeric vectors or matrices in \[0, 1\].
 #' @return A list with `exg`, `exr`, `exgr`.
-#' @examples
-#' vegetation_indices(0.2, 0.6, 0.1)
-#' @export
+#' @noRd
 vegetation_indices <- function(r, g, b) {
   s <- r + g + b
   s[s <= 0] <- 1
@@ -111,10 +105,7 @@ compute_color_features <- function(arr) {
 #'   a fixed seed).
 #' @param seed Seed for subsampling.
 #' @return A data frame with `x`, `y` and the colour features.
-#' @examples
-#' syn <- make_synthetic_leaf()
-#' head(leaf_color_features(syn$image, syn$leaf_mask))
-#' @export
+#' @noRd
 leaf_color_features <- function(image, mask = NULL, max_pixels = 50000L, seed = 1L) {
   arr <- as_rgb_array(resolve_image(image))
   d <- dim(arr)

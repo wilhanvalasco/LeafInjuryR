@@ -15,10 +15,7 @@ supported_extensions <- function() c("jpg", "jpeg", "png", "tif", "tiff")
 #'
 #' @param path Path to an image file.
 #' @return An `Image` (colour mode) with attribute `leaf_metadata`.
-#' @examples
-#' img <- read_leaf(leaf_example_images()[1])
-#' leaf_image_metadata(img)
-#' @export
+#' @noRd
 read_leaf <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path)) {
     leaf_abort("`path` must be a single file path.", "leafinjury_read_error")
@@ -61,9 +58,7 @@ read_leaf <- function(path) {
 #' @param image An image returned by [read_leaf()] or any EBImage `Image`.
 #' @return A list with `filename`, `extension`, `width`, `height`, `channels`
 #'   (`NA` where unknown).
-#' @examples
-#' leaf_image_metadata(read_leaf(leaf_example_images()[2]))
-#' @export
+#' @noRd
 leaf_image_metadata <- function(image) {
   md <- attr(image, "leaf_metadata")
   d <- dim(image)
@@ -93,10 +88,7 @@ resolve_image <- function(image) {
 #' @param mask Logical matrix `[width, height]`.
 #' @param path Output file path (`.png`).
 #' @return `path`, invisibly.
-#' @examples
-#' f <- tempfile(fileext = ".png")
-#' write_mask_png(matrix(c(TRUE, FALSE), 10, 10), f)
-#' @export
+#' @noRd
 write_mask_png <- function(mask, path) {
   mask <- check_mask(mask)
   EBImage::writeImage(EBImage::Image(mask * 1, colormode = EBImage::Grayscale),
@@ -108,10 +100,7 @@ write_mask_png <- function(mask, path) {
 #' @param image Colour `Image` or array `[width, height, 3]`.
 #' @param path Output file path.
 #' @return `path`, invisibly.
-#' @examples
-#' f <- tempfile(fileext = ".png")
-#' write_image_png(make_synthetic_leaf()$image, f)
-#' @export
+#' @noRd
 write_image_png <- function(image, path) {
   EBImage::writeImage(as_color_image(as_rgb_array(image)), path, type = "png")
   invisible(path)
@@ -122,9 +111,7 @@ write_image_png <- function(image, path) {
 #' @param dir Directory.
 #' @param recursive Search sub-directories.
 #' @return Character vector of image paths with supported extensions.
-#' @examples
-#' list_leaf_images(system.file("extdata", package = "LeafInjuryR"))
-#' @export
+#' @noRd
 list_leaf_images <- function(dir, recursive = FALSE) {
   if (!dir.exists(dir)) leaf_abort(sprintf("Directory not found: '%s'.", dir))
   pattern <- paste0("\\.(", paste(supported_extensions(), collapse = "|"), ")$")

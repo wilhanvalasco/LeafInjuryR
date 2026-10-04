@@ -1,8 +1,8 @@
 ---
-title: "Batch Processing"
+title: "Batch Processing and Reports"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Batch Processing}
+  %\VignetteIndexEntry{Batch Processing and Reports}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,49 +13,38 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ```{r}
 library(LeafInjuryR)
+imgs <- system.file("extdata", c("leaf_example_01.jpg", "leaf_example_02.jpg"),
+                    package = "LeafInjuryR")
 out <- file.path(tempdir(), "leaf_batch")
-b <- analyze_leaf_batch(leaf_example_images(), output_dir = out,
-                        crop = "auto", progress = FALSE)
+b <- analyze_leaf_batch(imgs, output_dir = out, crop = "auto", progress = FALSE)
 b
-```
-
-`images` may also be a directory (`analyze_leaf_batch("photos/")`). All
-images use the same settings, which are stored once in `b$parameters`.
-
-## Outputs
-
-```{r}
+b$summary
 list.files(out, recursive = TRUE)
-head(read.csv(file.path(out, "results.csv"))[, c("file", "healthy_percent",
-                                                   "injured_percent", "quality_flag",
-                                                   "status", "elapsed_sec")])
 ```
 
-* `results.csv`: one row per image (CSV is the default format for
-  interoperability and reproducibility).
-* `parameters.csv` and `analysis_report.txt`: methods and parameters.
-* `masks/`: leaf mask, injury mask and colour class map (PNG).
-* `overlays/`: translucent overlays for visual auditing.
+`images` may also be a folder: `analyze_leaf_batch("photos/", output_dir = "results")`.
+
+## Reports (generated automatically)
+
+All three come from the same results table:
+
+* `report.html` - self-contained interactive report (opens offline, no R
+  session needed): executive summary, statistics, comparative chart,
+  sortable table, gallery of original and processed images, parameters and
+  MD5 checksums of every input file.
+* `results.xlsx` - sheets *Resultados*, *Resumo* and *Parametros*.
+* `results.csv` - one row per image, one column per variable.
 
 ## Robustness
 
-A failing image never stops the batch: it gets `status = "failed"` and an
-`error_message`. Images are not kept in memory. Always inspect rows with
-`quality_flag = "warning"`: warnings do not change results.
+A failing image never stops the batch:
 
 ```{r}
 bad <- tempfile(fileext = ".jpg"); writeLines("not an image", bad)
-b2 <- analyze_leaf_batch(c(leaf_example_images()[1], bad), progress = FALSE)
+b2 <- analyze_leaf_batch(c(imgs[1], bad), progress = FALSE)
 b2$results[, c("file", "status", "error_message")]
 ```
 
-## Performance
-
-```{r, eval = FALSE}
-benchmark_leaf_analysis(leaf_example_images(), times = 3)
-```
-
-Time grows roughly linearly with pixel count (about 1-2 s per 0.75-megapixel
-image on a typical computer). Images of 1-4 megapixels with the leaf filling
-20-70 % of the frame are usually sufficient; `crop = "auto"` reduces the
-analysed area. Processing is sequential in version 0.1.0.
+Rows with `quality_flag = "warning"` should be inspected; warnings never
+change results. Batch analysis uses automatic segmentation; images that need
+manual correction can be reopened individually.

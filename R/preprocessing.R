@@ -26,11 +26,7 @@
 #' @return A new colour `Image` with attribute `normalization` (list with
 #'   `white_balance_gains`, `illumination_surface_range`, `background_pixels`,
 #'   `applied`).
-#' @examples
-#' img <- read_leaf(leaf_example_images()[1])
-#' img_n <- normalize_leaf_image(img)
-#' attr(img_n, "normalization")$white_balance_gains
-#' @export
+#' @noRd
 normalize_leaf_image <- function(image, white_balance = NULL,
                                  flatten_illumination = NULL,
                                  config = leaf_config()) {

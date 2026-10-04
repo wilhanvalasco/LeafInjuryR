@@ -1,7 +1,7 @@
 #' Automatically crop the image around the leaf
 #'
 #' Locates the main leaf on a down-scaled preview (maximum dimension
-#' `preview_max_dim`, see [leaf_config()]) using [segment_leaf()], takes the
+#' `preview_max_dim`, see [leaf_config()]) using [segment_leaf_mask()], takes the
 #' bounding box of the retained component(s), adds a margin and crops the
 #' full-resolution image. The bounding box is stored so that masks can be
 #' mapped back to the original image with [uncrop_mask()].
@@ -17,11 +17,7 @@
 #' @return The cropped `Image` with attribute `"crop_info"`: a list with
 #'   `method`, `found`, `bbox` (`x_min`, `x_max`, `y_min`, `y_max` in original
 #'   pixel coordinates) and `original_dim`.
-#' @examples
-#' img <- read_leaf(leaf_example_images()[1])
-#' cr <- auto_crop_leaf(img)
-#' attr(cr, "crop_info")$bbox
-#' @export
+#' @noRd
 auto_crop_leaf <- function(image, method = "auto", margin = NULL,
                            config = leaf_config()) {
   config <- as_leaf_config(config)
@@ -33,7 +29,7 @@ auto_crop_leaf <- function(image, method = "auto", margin = NULL,
   preview <- if (scale < 1) {
     EBImage::resize(image, w = max(2, round(d[1] * scale)), h = max(2, round(d[2] * scale)))
   } else image
-  seg <- segment_leaf(preview, method = method, config = config)
+  seg <- segment_leaf_mask(preview, method = method, config = config)
   if (!any(seg$mask)) {
     out <- image
     attr(out, "crop_info") <- list(method = "auto", found = FALSE,
@@ -69,11 +65,7 @@ auto_crop_leaf <- function(image, method = "auto", margin = NULL,
 #' @param x,y Numeric vectors (at least two points each) of pixel coordinates.
 #' @return The cropped `Image` with attribute `"crop_info"` (see
 #'   [auto_crop_leaf()]).
-#' @examples
-#' img <- read_leaf(leaf_example_images()[1])
-#' cr <- crop_leaf_manual(img, x = c(200, 780), y = c(130, 610))
-#' dim(cr)
-#' @export
+#' @noRd
 crop_leaf_manual <- function(image, x, y) {
   image <- resolve_image(image)
   md <- attr(image, "leaf_metadata")
@@ -110,12 +102,7 @@ crop_by_bbox <- function(image, bbox) {
 #'   [crop_leaf_manual()] or `result$crop`).
 #' @return Logical matrix with the original image dimensions (`FALSE` outside
 #'   the crop).
-#' @examples
-#' img <- read_leaf(leaf_example_images()[1])
-#' res <- analyze_leaf(img, crop = "auto")
-#' full <- uncrop_mask(res$leaf_mask, res$crop)
-#' dim(full)
-#' @export
+#' @noRd
 uncrop_mask <- function(mask, crop_info) {
   mask <- check_mask(mask)
   if (is.null(crop_info) || identical(crop_info$method, "none")) return(mask)

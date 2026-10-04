@@ -22,11 +22,7 @@
 #' @param region Optional logical matrix restricting evaluation.
 #' @param label Optional label stored in the output (e.g. `"leaf"`).
 #' @return A one-row data frame with counts and metrics.
-#' @examples
-#' ref <- matrix(FALSE, 10, 10); ref[3:8, 3:8] <- TRUE
-#' pred <- matrix(FALSE, 10, 10); pred[4:8, 3:8] <- TRUE
-#' evaluate_segmentation(pred, ref)
-#' @export
+#' @noRd
 evaluate_segmentation <- function(predicted_mask, reference_mask, region = NULL,
                                   label = NA_character_) {
   if (is.character(reference_mask)) reference_mask <- read_reference_mask(reference_mask)
@@ -74,11 +70,7 @@ evaluate_segmentation <- function(predicted_mask, reference_mask, region = NULL,
 #' @return A data frame with one row per evaluated task (`leaf`, `injury`)
 #'   plus columns `reference_injured_percent`, `predicted_injured_percent`
 #'   and `injured_percent_error` on the injury row.
-#' @examples
-#' syn <- make_synthetic_leaf()
-#' res <- analyze_leaf(syn$image)
-#' evaluate_leaf_analysis(res, syn$leaf_mask, syn$injury_mask)
-#' @export
+#' @noRd
 evaluate_leaf_analysis <- function(result, reference_leaf_mask = NULL,
                                    reference_injury_mask = NULL,
                                    injury_region = c("intersection", "reference_leaf")) {
@@ -126,11 +118,7 @@ evaluate_leaf_analysis <- function(result, reference_leaf_mask = NULL,
 #' @param target_dim Optional expected `c(width, height)`; an error is raised
 #'   if the mask size differs (masks are never silently resized).
 #' @return Logical matrix `[width, height]`.
-#' @examples
-#' f <- tempfile(fileext = ".png")
-#' write_mask_png(make_synthetic_leaf()$leaf_mask, f)
-#' m <- read_reference_mask(f)
-#' @export
+#' @noRd
 read_reference_mask <- function(path, threshold = 0.5, target_dim = NULL) {
   if (!file.exists(path)) leaf_abort(sprintf("Reference mask not found: '%s'.", path))
   img <- tryCatch(EBImage::readImage(path), error = function(e) NULL)
@@ -160,9 +148,7 @@ read_reference_mask <- function(path, threshold = 0.5, target_dim = NULL) {
 #' @return A data frame with columns `image`, `reference_leaf_mask`,
 #'   `reference_injury_mask`.
 #' @seealso [read_ground_truth()], [validate_ground_truth()]
-#' @examples
-#' ground_truth_manifest("leaf01.jpg", "leaf01_leaf.png", "leaf01_injury.png")
-#' @export
+#' @noRd
 ground_truth_manifest <- function(image, reference_leaf_mask = NA_character_,
                                   reference_injury_mask = NA_character_) {
   n <- length(image)
@@ -184,10 +170,7 @@ ground_truth_manifest <- function(image, reference_leaf_mask = NA_character_,
 #'
 #' @param file CSV file path.
 #' @return A manifest data frame (see [ground_truth_manifest()]).
-#' @examples
-#' tpl <- system.file("extdata", "ground_truth_template.csv", package = "LeafInjuryR")
-#' read.csv(tpl)
-#' @export
+#' @noRd
 read_ground_truth <- function(file) {
   df <- utils::read.csv(file, stringsAsFactors = FALSE, na.strings = c("", "NA"))
   need <- c("image", "reference_leaf_mask", "reference_injury_mask")
@@ -210,16 +193,7 @@ read_ground_truth <- function(file) {
 #'   [read_ground_truth()].
 #' @param ... Arguments passed to [analyze_leaf()].
 #' @return A data frame with one row per image and task.
-#' @examples
-#' dir <- tempfile(); dir.create(dir)
-#' syn <- make_synthetic_leaf()
-#' write_image_png(syn$image, file.path(dir, "s.png"))
-#' write_mask_png(syn$leaf_mask, file.path(dir, "s_leaf.png"))
-#' write_mask_png(syn$injury_mask, file.path(dir, "s_injury.png"))
-#' man <- ground_truth_manifest(file.path(dir, "s.png"), file.path(dir, "s_leaf.png"),
-#'                              file.path(dir, "s_injury.png"))
-#' validate_ground_truth(man)
-#' @export
+#' @noRd
 validate_ground_truth <- function(manifest, ...) {
   rows <- lapply(seq_len(nrow(manifest)), function(i) {
     res <- analyze_leaf(manifest$image[i], keep_images = FALSE, ...)

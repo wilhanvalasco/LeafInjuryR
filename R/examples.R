@@ -5,9 +5,7 @@
 #' reference masks and must **not** be used as ground truth.
 #'
 #' @return Character vector with the two file paths.
-#' @examples
-#' leaf_example_images()
-#' @export
+#' @noRd
 leaf_example_images <- function() {
   f <- c("leaf_example_01.jpg", "leaf_example_02.jpg")
   p <- system.file("extdata", f, package = "LeafInjuryR")
@@ -31,10 +29,7 @@ leaf_example_images <- function() {
 #' @param seed Seed for the noise.
 #' @return A list with `image` (colour `Image`), `leaf_mask`, `injury_mask`,
 #'   `necrotic_mask`, `chlorotic_mask`, `healthy_mask` and `colors`.
-#' @examples
-#' syn <- make_synthetic_leaf()
-#' sum(syn$injury_mask) / sum(syn$leaf_mask) * 100
-#' @export
+#' @noRd
 make_synthetic_leaf <- function(width = 120L, height = 90L, necrotic_radius = 8,
                                 chlorotic = FALSE, noise = 0.01, seed = 1L) {
   cols <- list(background = c(0.94, 0.94, 0.93), healthy = c(0.30, 0.60, 0.12),

@@ -7,30 +7,39 @@
 \title{LeafInjuryR: quantification of visual leaf injury patterns}
 \description{
 Classical, auditable image processing for the percentage of injured leaf
-area. The package separates:
+area, with six public functions:
 }
 \details{
-1. **leaf segmentation** ([segment_leaf()]): which pixels belong to the
-   leaf (including necrotic and chlorotic tissue);
-2. **tissue classification** ([classify_leaf_tissue()]): which leaf pixels
-   look healthy or injured - computed only inside the leaf mask;
-3. **quantification** ([calculate_injury()]): percentages relative to leaf
-   pixels.
+| Function | Purpose |
+|---|---|
+| [analyze_leaf()] | single-image analysis |
+| [analyze_leaf_batch()] | batch analysis with HTML, Excel and CSV reports |
+| [crop_leaf()] | automatic and manual cropping |
+| [segment_leaf()] | automatic and manually corrected segmentation |
+| [validate_leaf()] | quality control and validation against reference masks |
+| [run_leafinjury_app()] | local Shiny interface |
 
-[analyze_leaf()] runs the full pipeline, [analyze_leaf_batch()] processes
-many images and [run_leafinjury_app()] opens the local Shiny interface.
-Validation against manual reference masks is supported by
-[evaluate_segmentation()] and [validate_ground_truth()].
+Leaf segmentation (which pixels are leaf) is always performed before, and
+separately from, tissue classification (which leaf pixels are healthy or
+injured). Injury (%) = injured pixels / leaf-mask pixels x 100.
 
-**Scope.** The package quantifies *visual patterns* of colour change.
-It does not diagnose pathogens, diseases, nutritional deficiencies or
-phytotoxicity. Working software is not the same as a scientifically
-validated method: validate on your own imaging conditions.
+**Scope.** The package quantifies visual colour patterns. It does not
+diagnose pathogens, diseases, nutritional deficiencies or phytotoxicity.
+Working software is not the same as a validated method: calibrate and
+validate against manual reference masks for your own imaging conditions.
 
 **Privacy.** All processing is local; no telemetry or external services.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/wilhanvalasco/LeafInjuryR}
+  \item Report bugs at \url{https://github.com/wilhanvalasco/LeafInjuryR/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: LeafInjuryR contributors \email{maintainer@example.org} [copyright holder]
+\strong{Maintainer}: Wilhan Valasco dos Santos \email{wilhanvalasco@hotmail.com} [copyright holder]
 
 }
 \keyword{internal}

@@ -6,83 +6,113 @@
 \usage{
 analyze_leaf(
   image,
+  crop = c("none", "auto", "manual"),
+  crop_points = NULL,
   method = "auto",
   tissue_method = "lab",
-  crop = "none",
-  crop_points = NULL,
-  normalize = FALSE,
   multiclass = FALSE,
-  threshold = NULL,
-  min_object_size = NULL,
-  overlay_alpha = 0.45,
-  display = FALSE,
+  normalize = FALSE,
+  corrections = NULL,
+  segmentation = NULL,
+  pixels_per_cm = NULL,
+  params = list(),
   keep_images = TRUE,
-  config = leaf_config()
+  display = FALSE
 )
 }
 \arguments{
-\item{image}{Path to an image file or an EBImage `Image`.}
+\item{image}{Path to an image file (JPEG, PNG, TIFF) or an EBImage `Image`.}
 
-\item{method}{Leaf/background segmentation method (see [segment_leaf()]).}
+\item{crop}{`"none"`, `"auto"` or `"manual"` (see [crop_leaf()]).}
 
-\item{tissue_method}{Tissue classification method (see
-[classify_leaf_tissue()]).}
+\item{crop_points}{For `crop = "manual"`: list with numeric `x` and `y`.}
 
-\item{crop}{`"none"`, `"auto"` ([auto_crop_leaf()]) or `"manual"`
-([crop_leaf_manual()], requires `crop_points`).}
+\item{method, tissue_method, multiclass, normalize}{See [segment_leaf()].}
 
-\item{crop_points}{For `crop = "manual"`: a list or data frame with
-numeric `x` and `y` pixel coordinates (at least two points).}
+\item{corrections}{Optional manual corrections (see [segment_leaf()]),
+in coordinates of the cropped image.}
 
-\item{normalize}{Logical; apply [normalize_leaf_image()] before
-segmentation and classification. The original pixels are kept.}
+\item{segmentation}{Optional `leaf_segmentation` already computed on the
+cropped image (e.g. corrected interactively); it is used as is.}
 
-\item{multiclass}{Logical; classify healthy/chlorotic/necrotic/other.}
+\item{pixels_per_cm}{Optional scale (pixels per centimetre). If supplied,
+areas in cm^2 are added.}
 
-\item{threshold}{Optional manual segmentation threshold (see
-[segment_leaf()]).}
+\item{params}{Optional parameter overrides (see *Parameters*).}
 
-\item{min_object_size}{Optional minimum component size in pixels
-(overrides `config$morphology$min_object_size`).}
+\item{keep_images}{Keep image arrays in the result (set `FALSE` to save
+memory; masks and metrics are always kept).}
 
-\item{overlay_alpha}{Opacity of the overlay colours.}
-
-\item{display}{Logical; plot the four audit panels.}
-
-\item{keep_images}{Logical; keep image arrays in the result. Set `FALSE`
-to save memory (masks and metrics are always kept).}
-
-\item{config}{A [leaf_config()] object.}
+\item{display}{Plot the four audit panels.}
 }
 \value{
-An object of class `leaf_analysis`, a list with:
-  `original`, `cropped` (analysed region, original pixels), `normalized`
-  (`NULL` if `normalize = FALSE`), `leaf_mask`, `healthy_mask`,
-  `injury_mask`, `class_map`, `perforation_mask`, `overlay`, `metrics`
-  (one-row data frame), `parameters` (see [get_analysis_parameters()]),
-  `quality` (see [check_leaf_quality()]), `metadata`, `crop`,
-  `segmentation`, `tissue` and `timing`.
+An object of class `leaf_analysis` with `original`, `cropped`,
+  `normalized`, `leaf_mask`, `healthy_mask`, `injury_mask`, `class_map`,
+  `perforation_mask`, `overlay`, `metrics` (one-row data frame),
+  `parameters` (complete record for reproducibility), `quality`,
+  `metadata`, `crop`, `segmentation` and `timing`. Has `print()`,
+  `plot()` and `as.data.frame()` methods.
 }
 \description{
-Runs the complete, auditable pipeline:
+Complete, auditable pipeline for one photograph:
 }
 \details{
 ```
-original image -> (crop) -> (normalise) -> leaf segmentation -> leaf mask
-  -> pixels INSIDE the leaf mask -> tissue classification -> quantification
-  -> quality control
+import -> crop (optional) -> segment leaf -> leaf mask -> classify tissue
+  INSIDE the leaf mask -> (manual corrections) -> quantify -> quality control
 ```
 
-Injury classification happens strictly after segmentation, and no pixel
-outside the leaf mask contributes to `healthy_pixels`, `injured_pixels` or
-`injured_percent`.
+The injury percentage is `injured pixels / leaf-mask pixels x 100`; the
+background never enters the calculation. Areas are reported in **pixels**.
+Physical areas (cm^2) are added only when a valid scale is supplied with
+`pixels_per_cm` (e.g. measured from a ruler or reference object photographed
+in the same plane as the leaf).
 }
-\examples{
-res <- analyze_leaf(leaf_example_images()[1], crop = "auto")
-res$metrics
-res$quality$quality_flag
+\section{Parameters (`params`)}{
 
-res_mc <- analyze_leaf(leaf_example_images()[2], crop = "auto", multiclass = TRUE)
-res_mc$metrics[, c("healthy_percent", "chlorotic_percent",
-                   "necrotic_percent", "other_percent")]
+Every tunable value has a documented default and can be overridden with a
+named list of groups, e.g.
+`params = list(morphology = list(min_object_size = 500), tissue = list(lab_healthy_hue_min = 98))`.
+The complete configuration used is stored in `result$parameters$config`
+and can be passed back as `params` to reproduce an analysis.
+\describe{
+  \item{`segmentation`}{`threshold` (manual threshold for single-feature
+    methods; `NULL` = image-derived), `otsu_bins` (256), `min_separability`
+    (0.5), `border_fraction` (0.05), `max_border_foreground` (0.35),
+    `kmeans_centers` (3), `kmeans_sample` (20000), `kmeans_nstart` (5),
+    `kmeans_iter` (50), `kmeans_background_border_share` (0.2),
+    `surface_degree` (2), `surface_sample` (20000), `seed` (1).}
+  \item{`morphology`}{`opening_radius` (1 px), `brush_shape` ("disc"),
+    `min_object_size` (`NULL` = `min_object_fraction` x image area),
+    `min_object_fraction` (0.001), `keep_largest` (TRUE), `fill_holes`
+    (TRUE), `hole_policy` ("fill_non_background", "fill_all", "none"),
+    `background_delta_e` (15), `min_perforation_size` (25 px).}
+  \item{`crop`}{`margin_fraction` (0.05), `preview_max_dim` (400).}
+  \item{`normalization`}{`white_balance` (TRUE), `flatten_illumination`
+    (FALSE), `background_quantile` (0.5), `max_gain` (1.3).}
+  \item{`tissue`}{`lab_healthy_hue_min` (100), `lab_healthy_hue_max` (200),
+    `lab_necrotic_hue_max` (85), `hsv_healthy_hue_min` (57),
+    `hsv_healthy_hue_max` (170), `hsv_min_saturation` (0.15),
+    `exgr_threshold` (0), `achromatic_chroma_max` (8),
+    `dark_lightness_max` (35), `auto_hue_bounds` (90, 110),
+    `relative_hue_shift` (15), `relative_lightness_drop` (25),
+    `relative_bin_width` (4), `min_injury_size` (0).}
+  \item{`qc`}{`min_leaf_fraction` (0.02), `max_leaf_fraction` (0.90),
+    `max_raw_components` (50), `min_main_component_share` (0.90),
+    `min_contrast` (0.5), `max_illumination_cv` (0.08),
+    `illumination_grid` (4), `near_zero_injury` (0.5),
+    `near_full_injury` (99.5), `max_other_percent` (5).}
+}
+Hue angles are in degrees. All defaults are starting values, not validated
+constants.
+}
+
+\examples{
+f <- system.file("extdata", "leaf_example_02.jpg", package = "LeafInjuryR")
+res <- analyze_leaf(f, crop = "auto")
+res
+res$metrics[, c("leaf_pixels", "injured_pixels", "injured_percent", "quality_flag")]
+
+res_mc <- analyze_leaf(f, crop = "auto", multiclass = TRUE)
+res_mc$metrics[, c("chlorotic_percent", "necrotic_percent", "other_percent")]
 }

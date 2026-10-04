@@ -47,17 +47,13 @@
 #'   logical matrix), `raw_mask`, `method`, `thresholds`, `separability`,
 #'   `details`, `components`, `holes`, `background_lab`, `n_raw_components`,
 #'   `main_component_share`.
-#' @examples
-#' img <- read_leaf(leaf_example_images()[1])
-#' seg <- segment_leaf(img, method = "auto")
-#' sum(seg$mask)
-#' seg$details
-#' @export
-segment_leaf <- function(image, method = "auto", threshold = NULL, clean = TRUE,
+#' @noRd
+segment_leaf_mask <- function(image, method = "auto", threshold = NULL, clean = TRUE,
                          config = leaf_config()) {
   config <- as_leaf_config(config)
   method <- match.arg(method, leaf_methods()$method)
   arr <- as_rgb_array(resolve_image(image))
+  threshold <- threshold %||% config$segmentation$threshold
   raw <- raw_segmentation(arr, method, threshold, config)
   bg_lab <- estimate_background_lab(arr, !raw$mask, config)
   if (isTRUE(clean)) {
@@ -78,16 +74,6 @@ segment_leaf <- function(image, method = "auto", threshold = NULL, clean = TRUE,
     main_component_share = cl$main_component_share,
     min_object_size_used = cl$min_object_size_used
   ), class = "leaf_segmentation")
-}
-
-#' @export
-print.leaf_segmentation <- function(x, ...) {
-  cat("<leaf_segmentation> method:", x$method, "\n")
-  cat("  leaf pixels:", sum(x$mask), "of", length(x$mask), "\n")
-  cat("  thresholds:", paste(names(x$thresholds), signif(unlist(x$thresholds), 4),
-                             sep = "=", collapse = ", "), "\n")
-  if (!is.null(x$details$strategy)) cat("  strategy:", x$details$strategy, "\n")
-  invisible(x)
 }
 
 #' Threshold a feature with background polarity inferred from the border

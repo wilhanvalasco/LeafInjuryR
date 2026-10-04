@@ -6,10 +6,7 @@
 #'
 #' @param multiclass Logical.
 #' @return Named integer vector of class codes.
-#' @examples
-#' leaf_classes()
-#' leaf_classes(multiclass = TRUE)
-#' @export
+#' @noRd
 leaf_classes <- function(multiclass = FALSE) {
   if (isTRUE(multiclass)) {
     c(background = 0L, healthy = 1L, chlorotic = 2L, necrotic = 3L, other = 4L)
@@ -22,7 +19,7 @@ leaf_classes <- function(multiclass = FALSE) {
 #'
 #' Classifies **only pixels inside `leaf_mask`**; pixels outside the mask are
 #' background (class 0) and can never contribute to healthy or injured counts.
-#' Always run [segment_leaf()] first.
+#' Always run [segment_leaf_mask()] first.
 #'
 #' The classification is done in two stages, which guarantees that the binary
 #' result and the multiclass result are consistent:
@@ -72,18 +69,14 @@ leaf_classes <- function(multiclass = FALSE) {
 #' different biological causes; the classes are **not** diagnoses.
 #'
 #' @param image Image or path (the same image used for segmentation).
-#' @param leaf_mask Logical matrix from [segment_leaf()].
+#' @param leaf_mask Logical matrix from [segment_leaf_mask()].
 #' @param method Tissue classification method (see *Methods*).
 #' @param multiclass Logical; subdivide injured tissue.
 #' @param config A [leaf_config()] object.
 #' @return An object of class `leaf_tissue`: list with `class_map`,
 #'   `classes`, `healthy_mask`, `injury_mask`, `method`, `multiclass`,
 #'   `thresholds`, `details`.
-#' @examples
-#' syn <- make_synthetic_leaf()
-#' tis <- classify_leaf_tissue(syn$image, syn$leaf_mask)
-#' table(tis$class_map)
-#' @export
+#' @noRd
 classify_leaf_tissue <- function(image, leaf_mask, method = "lab", multiclass = FALSE,
                                  config = leaf_config()) {
   config <- as_leaf_config(config)
@@ -141,6 +134,17 @@ classify_leaf_tissue <- function(image, leaf_mask, method = "lab", multiclass = 
       thresholds$exgr_threshold <- tc$exgr_threshold
       votes >= 2
     },
+    relative = {
+      ref <- leaf_reference_color(lab, achromatic, tc)
+      healthy_lower <- ref$hue - tc$relative_hue_shift
+      thresholds$reference_lab <- c(L = ref$L, a = ref$a, b = ref$b, hue = ref$hue)
+      thresholds$relative_hue_shift <- tc$relative_hue_shift
+      thresholds$relative_lightness_drop <- tc$relative_lightness_drop
+      details$reference_share <- ref$share
+      !achromatic & (ref$hue - lab$hue) <= tc$relative_hue_shift &
+        (lab$hue - ref$hue) <= tc$relative_hue_shift * 4 &
+        lab$L >= ref$L - tc$relative_lightness_drop
+    },
     auto = {
       chrom <- !achromatic
       o <- otsu_threshold(lab$hue[chrom & lab$hue <= tc$lab_healthy_hue_max],
@@ -189,4 +193,29 @@ classify_leaf_tissue <- function(image, leaf_mask, method = "lab", multiclass = 
                  method = method, multiclass = isTRUE(multiclass),
                  thresholds = thresholds, details = details),
             class = "leaf_tissue")
+}
+
+#' Dominant ("reference") colour of a leaf
+#'
+#' Densest cell of the 2-D (a*, b*) histogram of chromatic leaf pixels
+#' (bin width `relative_bin_width`); the reference is the median L*a*b* of
+#' pixels in that cell. Assumes that the most frequent colour of the leaf is
+#' its unaffected tissue, which fails for leaves where injury dominates; the
+#' share of pixels supporting the reference is stored for auditing.
+#' @noRd
+leaf_reference_color <- function(lab, achromatic, tc) {
+  sel <- !achromatic
+  if (sum(sel) < 10) sel <- rep(TRUE, length(lab$a))
+  bw <- tc$relative_bin_width
+  key <- paste(floor(lab$a[sel] / bw), floor(lab$b[sel] / bw))
+  tab <- table(key)
+  top <- names(tab)[which.max(tab)]
+  in_top <- which(sel)[key == top]
+  # widen to the 3x3 neighbourhood of the densest cell for robustness
+  ka <- floor(lab$a / bw); kb <- floor(lab$b / bw)
+  ta <- as.numeric(strsplit(top, " ")[[1]])
+  near <- sel & abs(ka - ta[1]) <= 1 & abs(kb - ta[2]) <= 1
+  a <- stats::median(lab$a[near]); b <- stats::median(lab$b[near])
+  hue <- atan2(b, a) * 180 / pi; if (hue < 0) hue <- hue + 360
+  list(L = stats::median(lab$L[near]), a = a, b = b, hue = hue, share = mean(near))
 }

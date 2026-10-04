@@ -1,103 +1,75 @@
 ---
-title: "Image Segmentation and Tissue Classification"
+title: "Cropping, Segmentation and Manual Correction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Image Segmentation and Tissue Classification}
+  %\VignetteIndexEntry{Cropping, Segmentation and Manual Correction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
 ```
 
 ```{r}
 library(LeafInjuryR)
-img <- read_leaf(leaf_example_images()[2])
+f <- system.file("extdata", "leaf_example_02.jpg", package = "LeafInjuryR")
 ```
 
-## Two different problems
+## Cropping
 
-1. **Leaf segmentation** (`segment_leaf()`): which pixels are leaf,
-   whatever their health status. Necrotic and chlorotic tissue *must* be
-   included, otherwise injury is underestimated.
-2. **Injury classification** (`classify_leaf_tissue()`): which *leaf*
-   pixels look healthy or injured. It runs only inside the leaf mask.
-
-A visually acceptable mask is not evidence of accuracy; see
-`vignette("method-validation")`.
-
-## Segmentation methods
+`crop_leaf()` never resamples: pixels keep their original resolution.
 
 ```{r}
-cmp <- compare_segmentation_methods(img, methods = c("hsv", "lab", "exg", "otsu", "auto"))
-cmp
-plot(cmp)
+img <- crop_leaf(f, mode = "auto")
+attr(img, "crop_info")$bbox
+img_m <- crop_leaf(f, mode = "manual", x = c(200, 900), y = c(60, 650))
+dim(img_m)
 ```
 
-Note how `exg` (excess green) excludes the brown necrotic margin: indices
-built to detect *green vegetation* are not appropriate to delimit an injured
-leaf. The `auto` method combines CIELAB chroma (captures green and yellow
-tissue) with darkness (captures dark necrosis), and infers which side of each
-threshold is background from the image border. Agreement between methods is
-not accuracy; no method is declared best without ground truth.
+## Two separate problems
 
-The decision taken by `auto` is recorded:
+1. **Leaf segmentation** - which pixels are leaf, healthy or not. Necrotic
+   margins must be included, otherwise injury is underestimated.
+2. **Tissue classification** - which *leaf* pixels look healthy or injured,
+   computed only inside the leaf mask.
 
 ```{r}
-seg <- segment_leaf(img, "auto")
-seg$details[c("strategy", "accepted_features", "candidate_thresholds")]
+seg <- segment_leaf(img, multiclass = TRUE)
+seg
+plot(seg)
+seg$details$segmentation$strategy
 ```
 
-## Morphology and connected components
+The default leaf segmentation combines CIELAB chroma (green and yellow
+tissue) with darkness (dark necrosis). Excess-green indices exclude brown
+necrosis and are offered only for comparison.
+
+The default tissue rule (`"lab"`) uses fixed thresholds, identical for all
+images, which is preferable when comparing treatments. `"relative"` measures
+the distance to the leaf's own dominant colour and is intended for naturally
+pigmented or senescent leaves, where the absence of green is not a valid
+injury criterion.
+
+## Manual correction
+
+Corrections are rows of a data frame (brush strokes or rectangles). They are
+applied in order, stored in the result and therefore reproducible.
 
 ```{r}
-seg$components
-seg$holes[c("policy", "hole_pixels", "filled_pixels", "perforation_candidate_pixels")]
+fix <- data.frame(action = c("healthy", "remove_leaf"),
+                  shape = c("rect", "circle"),
+                  xmin = c(40, NA), xmax = c(140, NA), ymin = c(220, NA), ymax = c(300, NA),
+                  x = c(NA, 20), y = c(NA, 20), radius = c(NA, 12))
+seg2 <- segment_leaf(img, mode = "manual", corrections = fix, segmentation = seg)
+c(before = seg$metrics$injured_percent, after = seg2$metrics$injured_percent)
+seg2$corrections
 ```
 
-Components removed as noise or as external objects are listed with the
-reason. Holes are filled only when their colour differs from the
-background; background-coloured holes are kept outside the leaf and reported
-as *perforation candidates* (experimental) - they are never counted as injury.
-
-## Colour features
-
-No single channel is assumed to be universally superior. The features of
-leaf pixels can be explored directly:
-
-```{r}
-feat <- leaf_color_features(img, seg$mask, max_pixels = 20000)
-round(sapply(feat[, c("L", "a", "b", "chroma", "lab_hue", "hsv_hue",
-                      "saturation", "exg", "exr", "exgr")], quantile,
-             c(0.05, 0.5, 0.95)), 2)
-```
-
-## Tissue methods
-
-```{r}
-compare_tissue_methods(img, seg$mask)$summary[, c("tissue_method", "injured_percent")]
-```
-
-The spread between rules on the same leaf mask shows that the **tissue
-thresholds are the main source of uncertainty** in the injury estimate. The
-default (`"lab"`, fixed thresholds) applies identical rules to every image,
-which is preferable for comparing treatments; thresholds must be calibrated
-for each imaging setup against reference masks.
-
-## Normalisation
-
-```{r}
-img_n <- normalize_leaf_image(img)
-attr(img_n, "normalization")$white_balance_gains
-```
-
-Corrections are estimated from background pixels only and clipped to a
-conservative range. `analyze_leaf(normalize = TRUE)` keeps both
-`result$original` and `result$normalized` for auditing.
+In the Shiny app the same corrections are made with a brush (click) or a
+rectangle, and the injury percentage updates immediately.
 
 ## Scope
 
-Colour changes can have many biological causes. LeafInjuryR quantifies visual
-patterns; it does not diagnose pathogens, diseases, nutritional disorders or
-phytotoxicity.
+LeafInjuryR quantifies visual colour patterns. It does not diagnose
+pathogens, diseases, nutritional disorders or phytotoxicity.

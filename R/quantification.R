@@ -20,10 +20,7 @@
 #'   `injured_pixels`, `healthy_percent`, `injured_percent` and, in multiclass
 #'   mode, `chlorotic_pixels`, `necrotic_pixels`, `other_pixels` and the
 #'   corresponding percentages. Percentages are not rounded.
-#' @examples
-#' cm <- matrix(c(0L, 1L, 1L, 2L), 2, 2)
-#' calculate_injury(cm)
-#' @export
+#' @noRd
 calculate_injury <- function(class_map, leaf_mask = NULL, multiclass = NULL) {
   if (inherits(class_map, "leaf_tissue")) {
     multiclass <- multiclass %||% class_map$multiclass

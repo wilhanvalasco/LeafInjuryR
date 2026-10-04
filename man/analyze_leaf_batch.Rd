@@ -2,13 +2,13 @@
 % Please edit documentation in R/batch.R
 \name{analyze_leaf_batch}
 \alias{analyze_leaf_batch}
-\title{Analyse many leaf images}
+\title{Analyse many leaf images with the same settings}
 \usage{
 analyze_leaf_batch(
   images,
   output_dir = NULL,
-  save_masks = TRUE,
-  save_overlays = TRUE,
+  reports = c("html", "xlsx", "csv"),
+  save_images = TRUE,
   progress = interactive(),
   callback = NULL,
   recursive = FALSE,
@@ -20,48 +20,53 @@ analyze_leaf_batch(
 
 \item{output_dir}{Optional output directory (created if needed).}
 
-\item{save_masks, save_overlays}{Logical; write PNG files (requires
-`output_dir`).}
+\item{reports}{Report formats to write: any of `"html"`, `"xlsx"`, `"csv"`.}
 
-\item{progress}{Logical; show a text progress bar.}
+\item{save_images}{Write mask and overlay PNG files (requires `output_dir`).}
 
-\item{callback}{Optional function `function(i, n, file, status)` called
-after each image (used by the Shiny interface).}
+\item{progress}{Show a text progress bar.}
+
+\item{callback}{Optional `function(i, n, file, status)` called after each
+image (used by the Shiny app).}
 
 \item{recursive}{When `images` is a directory, search sub-directories.}
 
-\item{...}{Arguments passed to [analyze_leaf()] (e.g. `method`, `crop`,
-`multiclass`, `config`).}
+\item{...}{Settings passed to [analyze_leaf()] (e.g. `crop`, `method`,
+`tissue_method`, `multiclass`, `normalize`, `pixels_per_cm`, `params`).}
 }
 \value{
-An object of class `leaf_batch`: list with `results` (data frame,
-  one row per image, including `status`, `error_message` and
-  `elapsed_sec`), `parameters` (settings shared by all images),
-  `output_dir`, `files` and `total_elapsed_sec`.
+An object of class `leaf_batch`: `results` (data frame), `summary`
+  (descriptive statistics), `parameters`, `settings`, `thumbnails`,
+  `output_dir`, `report_files`, `files` and `total_elapsed_sec`.
 }
 \description{
-Applies [analyze_leaf()] to each image with the same settings. Errors are
-handled per image: a failing image is recorded with `status = "failed"`
-and its error message, and the batch continues. Images are not kept in
-memory; if `output_dir` is given, results are written as they are
-produced:
+Applies [analyze_leaf()] to every image with identical parameters. Each
+image is processed independently: an image that fails is recorded with
+`status = "failed"` and its error message, and the batch continues.
+Images are released from memory after each analysis; only small
+thumbnails are kept for the reports.
 }
 \details{
+When `output_dir` is given, the three reports are generated automatically
+from the same results table (consistent by construction):
+
 ```
 output_dir/
-  results.csv
-  parameters.csv
-  analysis_report.txt
-  masks/     <name>_leaf_mask.png, <name>_injury_mask.png, <name>_class_map.png
-  overlays/  <name>_overlay.png
+  report.html     self-contained interactive report (opens offline)
+  results.xlsx    sheets "Resultados", "Resumo", "Parametros"
+  results.csv     one row per image, one column per variable
+  masks/          <name>_leaf_mask.png, <name>_injury_mask.png, <name>_class_map.png
+  overlays/       <name>_overlay.png
 ```
 
-Processing is sequential in version 0.1.0; the per-image function is
-self-contained so parallel back-ends can be added later.
+Batch analysis uses automatic segmentation only; manual corrections are
+made image by image with [analyze_leaf()] or in the Shiny app.
 }
 \examples{
+imgs <- system.file("extdata", c("leaf_example_01.jpg", "leaf_example_02.jpg"),
+                    package = "LeafInjuryR")
 out <- file.path(tempdir(), "leaf_batch_example")
-b <- analyze_leaf_batch(leaf_example_images(), output_dir = out, crop = "auto")
-b$results[, c("file", "healthy_percent", "injured_percent", "quality_flag", "status")]
-list.files(out, recursive = TRUE)
+b <- analyze_leaf_batch(imgs, output_dir = out, crop = "auto", progress = FALSE)
+b
+list.files(out)
 }

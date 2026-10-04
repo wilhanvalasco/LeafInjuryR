@@ -1,7 +1,8 @@
 Package: LeafInjuryR
 Type: Package
-Title: Quantification of Visual Leaf Injury Patterns from Digital Images
-Version: 0.1.0
+Title: Quantification of Visual Leaf Injury Patterns from Digital
+        Images
+Version: 0.2.0
 Authors@R: person(
     given = "Wilhan Valasco",
     family = "dos Santos",
@@ -14,27 +15,29 @@ Description: Classical image-processing pipeline to quantify visual injury
     (2) classification of leaf tissue (healthy/injured, or optionally
     healthy/chlorotic/necrotic/other) using only pixels inside the leaf mask,
     and (3) quantification of injured area as a percentage of leaf area.
-    Includes automatic and manual cropping, optional conservative illumination
-    normalization, connected-component cleaning, quality-control flags,
-    comparison of segmentation methods, validation metrics against manually
+    Six public functions cover cropping, automatic and manually corrected
+    segmentation, single and batch analysis, validation against manually
     produced reference masks (IoU, Dice, sensitivity, specificity, precision,
-    F1), batch processing with CSV/PNG export, full parameter records for
-    reproducibility and a local 'shiny' interface. The package quantifies
+    F1) and a local 'shiny' interface. Batch analyses produce a
+    self-contained HTML report, an Excel workbook and a CSV table from the
+    same results, with full parameter records for reproducibility. The package quantifies
     visual patterns only; it does not diagnose pathogens, diseases,
     nutritional disorders or phytotoxicity. All processing is local.
 License: GPL (>= 3)
 Encoding: UTF-8
 Language: en-US
 Depends: R (>= 4.1.0)
-Imports: EBImage, graphics, grDevices, stats, tools, utils
+Imports: EBImage, base64enc, writexl, graphics, grDevices, stats,
+        tools, utils
 Suggests: shiny (>= 1.7.0), bslib, DT, testthat (>= 3.0.0), knitr,
-    rmarkdown
+        rmarkdown
 biocViews:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 RoxygenNote: 7.3.1
-NeedsCompilation: no
-Author: Wilhan Valasco dos Santos [aut, cre, cph]
-Maintainer: Wilhan Valasco dos Santos <wilhanvalasco@hotmail.com>
 URL: https://github.com/wilhanvalasco/LeafInjuryR
 BugReports: https://github.com/wilhanvalasco/LeafInjuryR/issues
+NeedsCompilation: no
+Packaged: 2026-10-04 17:41:00 UTC; root
+Author: Wilhan Valasco dos Santos [aut, cre, cph]
+Maintainer: Wilhan Valasco dos Santos <wilhanvalasco@hotmail.com>

@@ -18,6 +18,6 @@
 Shows ORIGINAL (analysed region), LEAF MASK, CLASSIFICATION and OVERLAY.
 }
 \examples{
-res <- analyze_leaf(leaf_example_images()[1], crop = "auto")
+res <- analyze_leaf(system.file("extdata", "leaf_example_01.jpg", package = "LeafInjuryR"), crop = "auto")
 plot(res)
 }

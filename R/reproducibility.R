@@ -11,12 +11,7 @@
 #' @param flatten If `TRUE`, return a two-column data frame (`parameter`,
 #'   `value`) suitable for CSV export.
 #' @return A nested list, or a data frame when `flatten = TRUE`.
-#' @examples
-#' res <- analyze_leaf(leaf_example_images()[1])
-#' p <- get_analysis_parameters(res)
-#' p$background_strategy
-#' head(get_analysis_parameters(res, flatten = TRUE))
-#' @export
+#' @noRd
 get_analysis_parameters <- function(x, flatten = FALSE) {
   p <- if (inherits(x, "leaf_analysis") || inherits(x, "leaf_batch")) x$parameters else
     leaf_abort("`x` must be a 'leaf_analysis' or 'leaf_batch' object.")
@@ -64,10 +59,7 @@ flatten_list <- function(x, prefix = NULL) {
 #' @param x A `leaf_analysis` or `leaf_batch` object.
 #' @param file Optional path; if given, the report is written to this file.
 #' @return A character vector of class `leaf_report` (printed nicely).
-#' @examples
-#' res <- analyze_leaf(leaf_example_images()[1], crop = "auto")
-#' analysis_report(res)
-#' @export
+#' @noRd
 analysis_report <- function(x, file = NULL) {
   p <- get_analysis_parameters(x)
   seg_desc <- c(
@@ -79,7 +71,8 @@ analysis_report <- function(x, file = NULL) {
   tis_desc <- c(
     auto = "CIELAB hue angle with within-leaf Otsu threshold constrained to configured bounds",
     lab = "CIELAB hue-angle rule", hsv = "HSV hue/saturation rule",
-    exgr = "ExG - ExR index", vote = "majority vote of CIELAB, HSV and ExG-ExR rules")
+    exgr = "ExG - ExR index", vote = "majority vote of CIELAB, HSV and ExG-ExR rules",
+    relative = "distance to the leaf dominant (reference) colour in CIELAB")
   fmt_thr <- function(l) {
     if (!length(l)) return("none")
     paste(vapply(names(l), function(n) paste0(n, " = ", paste(signif(l[[n]], 4), collapse = "-")),
@@ -118,11 +111,14 @@ analysis_report <- function(x, file = NULL) {
     sprintf("Classes: %s", if (isTRUE(p$multiclass))
       "healthy, chlorotic, necrotic, other (injured = chlorotic + necrotic + other)"
       else "healthy, injured"),
+    if (!inherits(x, "leaf_batch") && is.data.frame(p$manual_corrections) && nrow(p$manual_corrections))
+      sprintf("Manual corrections: %d (stored in the parameters)", nrow(p$manual_corrections)),
     "Injury percentage denominator: leaf-mask pixels only (background excluded).",
+    sprintf("Area unit: %s", p$area_unit %||% "pixels"),
     sprintf("Random seed: %s", p$seed),
     "",
     "Note: results quantify visual colour patterns. The method has not been validated",
-    "against manual reference masks by this report; see vignette('method-validation').",
+    "against manual reference masks by this report; see validate_leaf().",
     "Colour changes may have different biological causes; no diagnosis is implied."
   )
   lines <- lines[!vapply(lines, is.null, logical(1))]

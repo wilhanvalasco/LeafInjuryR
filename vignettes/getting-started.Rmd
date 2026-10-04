@@ -12,69 +12,49 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height
 ```
 
 LeafInjuryR quantifies the percentage of leaf area showing visual injury
-patterns in photographs of detached leaves on a contrasting background. It
-uses classical, auditable image processing and runs entirely on your computer.
+patterns in photographs of detached leaves on a contrasting background, with
+classical, auditable image processing that runs entirely on your computer.
 
 ## Installation
 
-EBImage is distributed by Bioconductor, so install it first:
-
 ```{r, eval = FALSE}
 install.packages("BiocManager")
-BiocManager::install("EBImage")
-# then, from the package source:
-install.packages("LeafInjuryR_0.1.0.tar.gz", repos = NULL, type = "source")
-# optional, for the graphical interface:
-install.packages(c("shiny", "bslib", "DT"))
+BiocManager::install("wilhanvalasco/LeafInjuryR")   # installs EBImage too
+install.packages(c("shiny", "bslib", "DT"))          # graphical interface
 ```
+
+## The six functions
+
+| Function | Purpose |
+|---|---|
+| `analyze_leaf()` | single-image analysis |
+| `analyze_leaf_batch()` | batch analysis with HTML, Excel and CSV reports |
+| `crop_leaf()` | automatic and manual cropping |
+| `segment_leaf()` | automatic and manually corrected segmentation |
+| `validate_leaf()` | quality control and validation against reference masks |
+| `run_leafinjury_app()` | local Shiny interface |
 
 ## Analyse one image
 
 ```{r}
 library(LeafInjuryR)
-files <- leaf_example_images()
-res <- analyze_leaf(files[2], crop = "auto")
+f <- system.file("extdata", "leaf_example_02.jpg", package = "LeafInjuryR")
+res <- analyze_leaf(f, crop = "auto", multiclass = TRUE)
 res
-```
-
-The four audit panels show the analysed region, the leaf mask, the tissue
-classification and the translucent overlay:
-
-```{r}
 plot(res)
 ```
 
-The tabular result is a one-row data frame:
+`injured_percent` = injured pixels / leaf-mask pixels x 100. Areas are in
+pixels; cm^2 are reported only when a scale is given (`pixels_per_cm`).
+
+## Quality control
 
 ```{r}
-res$metrics[, c("file", "leaf_pixels", "healthy_pixels", "injured_pixels",
-                "healthy_percent", "injured_percent", "quality_flag")]
+validate_leaf(res)
 ```
 
-`injured_percent` is always computed relative to **leaf pixels**, never to the
-whole image.
-
-## Multiclass classification
-
-```{r}
-res_mc <- analyze_leaf(files[2], crop = "auto", multiclass = TRUE)
-res_mc$metrics[, c("healthy_percent", "chlorotic_percent",
-                   "necrotic_percent", "other_percent", "injured_percent")]
-```
-
-By construction, `injured = chlorotic + necrotic + other`.
-
-## Quality control and parameters
-
-```{r}
-res$quality$quality_flag
-res$quality$quality_messages
-analysis_report(res)
-```
-
-Every result stores the parameters needed to reproduce it
-(`get_analysis_parameters(res)`), including package version, thresholds
-actually used, morphology, quality-control limits and the random seed.
+Without manual reference masks only quality indicators are shown; accuracy
+metrics require ground truth (see `vignette("method-validation")`).
 
 ## Graphical interface
 
@@ -82,7 +62,5 @@ actually used, morphology, quality-control limits and the random seed.
 run_leafinjury_app()
 ```
 
-## Important
-
-The example images are functional examples, **not** ground truth. Working
-software is not a validated method: see `vignette("method-validation")`.
+The app has four areas - Imagem, Segmentação, Análise and Resultados - and
+calls the same functions.

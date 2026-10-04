@@ -15,11 +15,7 @@
 #' @param output_dir Directory (created if needed).
 #' @param prefix File-name prefix.
 #' @return Character vector of written paths, invisibly.
-#' @examples
-#' res <- analyze_leaf(leaf_example_images()[1], crop = "auto")
-#' files <- export_leaf_analysis(res, file.path(tempdir(), "leaf_export"))
-#' basename(files)
-#' @export
+#' @noRd
 export_leaf_analysis <- function(x, output_dir, prefix = NULL) {
   if (!inherits(x, "leaf_analysis")) leaf_abort("`x` must be a 'leaf_analysis' object.")
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
@@ -49,10 +45,7 @@ export_leaf_analysis <- function(x, output_dir, prefix = NULL) {
 #' @param x A `leaf_analysis`, `leaf_batch` or data frame of metrics.
 #' @param file Output CSV path.
 #' @return `file`, invisibly.
-#' @examples
-#' res <- analyze_leaf(leaf_example_images()[1])
-#' write_leaf_results(res, tempfile(fileext = ".csv"))
-#' @export
+#' @noRd
 write_leaf_results <- function(x, file) {
   df <- if (inherits(x, "leaf_analysis")) x$metrics else if (inherits(x, "leaf_batch"))
     x$results else if (is.data.frame(x)) x else leaf_abort("Unsupported object.")

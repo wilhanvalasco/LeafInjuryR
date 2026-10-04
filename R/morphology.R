@@ -26,11 +26,7 @@
 #'   `component`, `area`, `kept`, `reason`), `n_raw_components`,
 #'   `main_component_share` and `holes` (list with pixel counts, the
 #'   perforation-candidate mask and the policy used).
-#' @examples
-#' syn <- make_synthetic_leaf()
-#' cl <- clean_leaf_mask(syn$leaf_mask, syn$image)
-#' cl$components
-#' @export
+#' @noRd
 clean_leaf_mask <- function(mask, image = NULL, background_lab = NULL,
                             config = leaf_config()) {
   config <- as_leaf_config(config)

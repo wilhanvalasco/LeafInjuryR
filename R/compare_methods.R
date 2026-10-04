@@ -7,23 +7,19 @@
 #' [evaluate_segmentation()] with ground truth for that.
 #'
 #' @param image Image or path.
-#' @param methods Segmentation methods (see [segment_leaf()]).
+#' @param methods Segmentation methods (see [segment_leaf_mask()]).
 #' @param config A [leaf_config()] object.
 #' @return An object of class `leaf_method_comparison` with `image`,
 #'   `masks` (named list), `summary` (data frame), `agreement` (IoU matrix)
 #'   and `note`. Has a `plot()` method.
-#' @examples
-#' cmp <- compare_segmentation_methods(leaf_example_images()[2])
-#' cmp$summary
-#' plot(cmp)
-#' @export
+#' @noRd
 compare_segmentation_methods <- function(image, methods = c("hsv", "lab", "exg", "otsu", "auto"),
                                          config = leaf_config()) {
   config <- as_leaf_config(config)
   methods <- match.arg(methods, leaf_methods()$method, several.ok = TRUE)
   img <- resolve_image(image)
   arr <- as_rgb_array(img)
-  segs <- lapply(methods, function(m) segment_leaf(arr, method = m, config = config))
+  segs <- lapply(methods, function(m) segment_leaf_mask(arr, method = m, config = config))
   names(segs) <- methods
   n <- length(arr[, , 1])
   summary <- do.call(rbind, lapply(methods, function(m) {
@@ -85,22 +81,19 @@ plot.leaf_method_comparison <- function(x, alpha = 0.5, ...) {
 #'
 #' @param image Image or path.
 #' @param leaf_mask Logical leaf mask; if `NULL` it is computed with
-#'   `segment_leaf(image, "auto")`.
+#'   `segment_leaf_mask(image, "auto")`.
 #' @param methods Tissue methods (see [classify_leaf_tissue()]).
 #' @param multiclass Logical.
 #' @param config A [leaf_config()] object.
 #' @return A list with `class_maps` and `summary` (data frame of percentages).
-#' @examples
-#' cmp <- compare_tissue_methods(leaf_example_images()[1])
-#' cmp$summary
-#' @export
+#' @noRd
 compare_tissue_methods <- function(image, leaf_mask = NULL,
                                    methods = c("lab", "hsv", "exgr", "vote", "auto"),
                                    multiclass = FALSE, config = leaf_config()) {
   config <- as_leaf_config(config)
   methods <- match.arg(methods, leaf_methods()$tissue_method, several.ok = TRUE)
   arr <- as_rgb_array(resolve_image(image))
-  leaf_mask <- leaf_mask %||% segment_leaf(arr, "auto", config = config)$mask
+  leaf_mask <- leaf_mask %||% segment_leaf_mask(arr, "auto", config = config)$mask
   res <- lapply(methods, function(m) classify_leaf_tissue(arr, leaf_mask, m, multiclass, config))
   names(res) <- methods
   summary <- do.call(rbind, lapply(methods, function(m) {

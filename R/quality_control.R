@@ -19,17 +19,14 @@
 #'   stored in `x`.
 #' @return A list with `quality_flag`, `quality_messages` (character),
 #'   `indicators` (named list) and `diagnostic_score`.
-#' @examples
-#' res <- analyze_leaf(leaf_example_images()[1])
-#' check_leaf_quality(res)$quality_flag
-#' @export
+#' @noRd
 check_leaf_quality <- function(x, config = NULL) {
   if (!inherits(x, "leaf_analysis")) {
     leaf_abort("`x` must be a 'leaf_analysis' object returned by analyze_leaf().")
   }
   config <- config %||% x$parameters$config
   img <- x$normalized %||% x$cropped %||% x$original
-  compute_quality(as_rgb_array(img), x$segmentation, x$metrics, config)
+  compute_quality(as_rgb_array(img), qc_view(x$segmentation), x$metrics, config)
 }
 
 #' @noRd

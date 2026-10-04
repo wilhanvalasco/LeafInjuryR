@@ -123,11 +123,7 @@
 #'   overriding entries of the corresponding group.
 #' @return An object of class `leaf_config` (a nested list).
 #' @seealso [get_analysis_parameters()]
-#' @examples
-#' cfg <- leaf_config()
-#' cfg$morphology$min_object_fraction
-#' cfg2 <- leaf_config(morphology = list(opening_radius = 2, keep_largest = FALSE))
-#' @export
+#' @noRd
 leaf_config <- function(segmentation = list(), morphology = list(), crop = list(),
                         normalization = list(), tissue = list(), qc = list()) {
   defaults <- default_config_values()
@@ -153,6 +149,7 @@ leaf_config <- function(segmentation = list(), morphology = list(), crop = list(
 default_config_values <- function() {
   list(
     segmentation = list(
+      threshold = NULL,
       otsu_bins = 256L,
       min_separability = 0.5,
       border_fraction = 0.05,
@@ -198,6 +195,9 @@ default_config_values <- function() {
       achromatic_chroma_max = 8,
       dark_lightness_max = 35,
       auto_hue_bounds = c(90, 110),
+      relative_hue_shift = 15,
+      relative_lightness_drop = 25,
+      relative_bin_width = 4,
       min_injury_size = 0L
     ),
     qc = list(
@@ -260,13 +260,32 @@ as_leaf_config <- function(config) {
 #'
 #' @return A list with the valid values of `method` (leaf/background
 #'   segmentation), `tissue_method` (tissue classification) and `crop`.
-#' @examples
-#' leaf_methods()
-#' @export
+#' @noRd
 leaf_methods <- function() {
   list(
     method = c("auto", "lab", "hsv", "exg", "otsu", "adaptive", "kmeans"),
-    tissue_method = c("auto", "lab", "hsv", "exgr", "vote"),
+    tissue_method = c("lab", "hsv", "exgr", "vote", "auto", "relative"),
     crop = c("none", "auto", "manual")
   )
+}
+
+#' Convert the user-facing `params` argument into a validated configuration
+#'
+#' `params` is a named list whose elements are the configuration groups
+#' (`segmentation`, `morphology`, `crop`, `normalization`, `tissue`, `qc`),
+#' each a named list of overrides. A complete configuration object (as stored
+#' in `result$parameters$config`) is also accepted, which makes re-running a
+#' stored analysis straightforward.
+#' @noRd
+params_to_config <- function(params = list()) {
+  if (inherits(params, "leaf_config")) { validate_config(params); return(params) }
+  if (is.null(params)) params <- list()
+  if (!is.list(params)) leaf_abort("`params` must be a named list (see ?analyze_leaf).")
+  groups <- names(default_config_values())
+  unknown <- setdiff(names(params), groups)
+  if (length(unknown)) {
+    leaf_abort(sprintf("Unknown params group(s): %s. Valid groups: %s.",
+                       paste(unknown, collapse = ", "), paste(groups, collapse = ", ")))
+  }
+  do.call(leaf_config, params)
 }

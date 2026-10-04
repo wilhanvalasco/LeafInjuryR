@@ -16,11 +16,7 @@
 #' @param ... Passed to [analyze_leaf()].
 #' @return A data frame with `file`, `megapixels`, `run`, `elapsed_sec`,
 #'   `max_mb`.
-#' @examples
-#' \donttest{
-#' benchmark_leaf_analysis(leaf_example_images()[1], times = 1)
-#' }
-#' @export
+#' @noRd
 benchmark_leaf_analysis <- function(images, times = 1L, ...) {
   rows <- list()
   for (f in images) {
