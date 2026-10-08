@@ -1,0 +1,8 @@
+﻿"Feature","ImageJ/Fiji","PlantCV","pliman","Assess / Leaf Doctor","LeafInjuryR"
+"Environment","Java; GUI and macros","Python library","R package","Dedicated program and app","R package and local Shiny"
+"Programming required","Optional (macros)","Yes","Yes","No","Optional"
+"Batch processing","Via macro","Yes","Yes","Limited","Yes, with error isolation"
+"Explicit leaf/tissue separation","User-defined","User-defined","Via palettes or indices","Not explicit","Yes, mandatory"
+"Recorded manual correction","Not automatic","No","No","No","Yes"
+"Automatic record of parameters and MD5","No","Partial","Partial","No","Yes"
+"Built-in validation metrics","Via plugins","Not specific","Not specific","No","IoU, Dice, Se, Sp, Pr, F1"

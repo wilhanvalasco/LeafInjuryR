@@ -1,0 +1,7 @@
+﻿"Function","Purpose","Main outputs"
+"crop_leaf()","Automatic (leaf box + margin) or manual cropping, without resampling","Cropped image and crop coordinates"
+"segment_leaf()","Leaf segmentation, tissue classification and logged manual correction","Leaf mask, class map, thresholds and corrections"
+"analyze_leaf()","Complete analysis of one image","Areas, severity, quality control and parameters"
+"analyze_leaf_batch()","Batch analysis with standardised parameters","HTML, Excel and CSV reports, masks and overlays"
+"validate_leaf()","Quality control and validation against reference masks","Warnings; IoU, Dice, sensitivity, specificity, precision and F1"
+"run_leafinjury_app()","Local Shiny interface with four areas","Image, Segmentation, Analysis and Results"

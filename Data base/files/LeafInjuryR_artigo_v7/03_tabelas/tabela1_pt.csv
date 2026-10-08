@@ -1,0 +1,7 @@
+﻿"Função","Finalidade","Principais saídas"
+"crop_leaf()","Recorte automático (caixa da folha + margem) ou manual, sem reamostragem","Imagem recortada e coordenadas do recorte"
+"segment_leaf()","Segmentação da folha, classificação dos tecidos e correção manual registrada","Máscara foliar, mapa de classes, limiares e correções"
+"analyze_leaf()","Análise completa de uma imagem","Áreas, severidade, controle de qualidade e parâmetros"
+"analyze_leaf_batch()","Análise em lote com parâmetros padronizados","Relatórios HTML, Excel e CSV, máscaras e sobreposições"
+"validate_leaf()","Controle de qualidade e validação frente a máscaras de referência","Alertas; IoU, Dice, sensibilidade, especificidade, precisão e F1"
+"run_leafinjury_app()","Interface Shiny local com quatro áreas","Imagem, Segmentação, Análise e Resultados"

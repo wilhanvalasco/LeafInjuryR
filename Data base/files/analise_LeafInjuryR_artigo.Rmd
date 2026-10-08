@@ -1,0 +1,400 @@
+---
+title: "`r if (params$lang == 'pt') 'LeafInjuryR: análises e figuras do artigo' else 'LeafInjuryR: manuscript analyses and figures'`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+params:
+  lang: "pt"               # "pt" ou "en": idioma de todas as figuras e tabelas
+  data_xlsx: "Avaliacao_Doencas_Visual_versus_leafInjury.xlsx"
+  images_dir: "imagens"    # 48 fotografias de folíolos de soja (mancha-alvo)
+  n_boot: 2000
+  seed: 2026
+  out_dir: "resultados"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 5, dpi = 150)
+suppressPackageStartupMessages({ library(readxl); library(ggplot2); library(LeafInjuryR) })
+set.seed(params$seed)
+L <- params$lang
+FD <- file.path(params$out_dir, "figuras"); TD <- file.path(params$out_dir, "tabelas")
+dir.create(FD, recursive = TRUE, showWarnings = FALSE); dir.create(TD, recursive = TRUE, showWarnings = FALSE)
+LI <- asNamespace("LeafInjuryR")
+
+# ---- Paleta fria e discreta ---------------------------------------------------
+pal <- c(navy = "#1F3A5F", slate = "#4A6C8C", steel = "#7F9DBB", mist = "#B9CCDD",
+         teal = "#3E7C83", sage = "#8FB3AE", grey = "#8C939B", ice = "#E6EDF3")
+tissue_cols <- LeafInjuryR:::leaf_class_colors(TRUE)   # cores padrão do LeafInjuryR (iguais às do app)
+rater_cols <- c(pal[["navy"]], pal[["teal"]], pal[["steel"]], pal[["grey"]])
+
+# ---- Dicionário de textos (edite aqui) -----------------------------------------
+tx <- list(
+  pt = list(vis = "Severidade observada (%)", li = "Severidade LeafInjuryR (%)", img = "Imagem",
+            imgs_ord = "Folíolos ordenados pela severidade observada", sev = "Severidade estimada (%)",
+            rater = "Avaliador", range = "Amplitude entre avaliadores", median = "Mediana",
+            thr = "Limiar de decisão (% de severidade)", disag = "Folíolos com decisão divergente (%)",
+            linear = "Linear", best = "Melhor modelo não linear", conf = "Banda de confiança de 95%",
+            pred = "Banda de predição de 95%", obs = "Severidade observada (%)", obs_short = "Observada",
+            loo = "Severidade predita (%)", line11 = "Linha 1:1",
+            leaf1 = "Folha 1", leaf2 = "Folha 2", hue = "Limiar de matiz do tecido saudável (graus)",
+            inj = "Área foliar injuriada (%)", rule = "(a) Regra de classificação, mesma máscara",
+            sens = "(b) Sensibilidade ao limiar de matiz",
+            p2 = c("(a) Fotografia recortada", "(b) Máscara por excesso de verde", "(c) Máscara somente por croma",
+                   "(d) Máscara foliar final (auto)", "(e) Classes de tecido", "(f) Sobreposição"),
+            classes = c("Saudável", "Clorótico", "Necrótico", "Outro"),
+            models = c(linear = "Linear", quadratic = "Quadrático", power = "Potência", log = "Logarítmico",
+                       asymptotic = "Assintótico"),
+            arch = list(top = "run_leafinjury_app(): as áreas Imagem | Segmentação | Análise | Resultados chamam as mesmas funções",
+                        steps = list(c("Importação", "leitura JPEG/PNG/TIFF\nMD5 do arquivo"),
+                                     c("Recorte", "crop_leaf()\nauto: caixa + margem\nmanual: retângulo"),
+                                     c("Segmentação", "segment_leaf()\nC* e 100 − L* (Otsu)\npolaridade pela borda\nmorfologia, componentes"),
+                                     c("Classificação", "somente na máscara\nmatiz CIELAB (padrão)\nHSV, ExG−ExR, voto,\nauto, relativo"),
+                                     c("Correção manual", "pincel / retângulo\ncorreções registradas"),
+                                     c("Quantificação", "A_f, A_i, I(%)\n(cm² se houver escala)")),
+                        bottom = list(c("Controle de qualidade e validação", "validate_leaf()\nalertas de qualidade\nIoU, Dice, Se, Sp, Pr, F1\n(apenas com referência)"),
+                                      c("Análise individual e em lote", "analyze_leaf()\nanalyze_leaf_batch()\nerros isolados por imagem\nparâmetros, MD5, correções"),
+                                      c("Relatórios", "HTML autocontido\nExcel: Resultados, Resumo,\nParametros | CSV\nmáscaras e sobreposições")))),
+  en = list(vis = "Observed severity (%)", li = "LeafInjuryR severity (%)", img = "Image",
+            imgs_ord = "Leaflets ordered by observed severity", sev = "Estimated severity (%)",
+            rater = "Rater", range = "Range among raters", median = "Median",
+            thr = "Decision threshold (% severity)", disag = "Leaflets with divergent decision (%)",
+            linear = "Linear", best = "Best nonlinear model", conf = "95% confidence band",
+            pred = "95% prediction band", obs = "Observed severity (%)", obs_short = "Observed",
+            loo = "Predicted severity (%)", line11 = "1:1 line",
+            leaf1 = "Leaf 1", leaf2 = "Leaf 2", hue = "Healthy-tissue hue threshold (degrees)",
+            inj = "Injured leaf area (%)", rule = "(a) Classification rule, same mask",
+            sens = "(b) Sensitivity to the hue threshold",
+            p2 = c("(a) Cropped photograph", "(b) Excess-green mask", "(c) Chroma-only mask",
+                   "(d) Final leaf mask (auto)", "(e) Tissue classes", "(f) Overlay"),
+            classes = c("Healthy", "Chlorotic", "Necrotic", "Other"),
+            models = c(linear = "Linear", quadratic = "Quadratic", power = "Power", log = "Logarithmic",
+                       asymptotic = "Asymptotic"),
+            arch = list(top = "run_leafinjury_app(): the Image | Segmentation | Analysis | Results areas call the same functions",
+                        steps = list(c("Import", "JPEG/PNG/TIFF reading\nfile MD5"),
+                                     c("Crop", "crop_leaf()\nauto: box + margin\nmanual: rectangle"),
+                                     c("Segmentation", "segment_leaf()\nC* and 100 − L* (Otsu)\nborder polarity\nmorphology, components"),
+                                     c("Classification", "inside the mask only\nCIELAB hue (default)\nHSV, ExG−ExR, vote,\nauto, relative"),
+                                     c("Manual correction", "brush / rectangle\nlogged corrections"),
+                                     c("Quantification", "A_f, A_i, I(%)\n(cm² if scale given)")),
+                        bottom = list(c("Quality control and validation", "validate_leaf()\nquality warnings\nIoU, Dice, Se, Sp, Pr, F1\n(only with references)"),
+                                      c("Single and batch analysis", "analyze_leaf()\nanalyze_leaf_batch()\nper-image error isolation\nparameters, MD5, corrections"),
+                                      c("Reports", "self-contained HTML\nExcel: Resultados, Resumo,\nParametros | CSV\nmasks and overlays"))))
+)[[L]]
+dec <- if (L == "pt") "," else "."
+fmt <- function(x, d = 2) formatC(x, format = "f", digits = d, decimal.mark = dec)
+theme_cool <- theme_bw(base_size = 10.5) +
+  theme(panel.grid.minor = element_blank(), panel.grid.major = element_line(colour = "#E9EDF1"),
+        panel.border = element_rect(colour = "#B8C2CC"), axis.ticks = element_line(colour = "#B8C2CC"),
+        legend.position = "bottom", legend.key.width = unit(1.4, "lines"),
+        plot.tag = element_text(face = "bold"), strip.background = element_rect(fill = pal[["ice"]], colour = "#B8C2CC"))
+theme_set(theme_cool)
+fig <- function(name) file.path(FD, paste0(name, "_", L, ".png"))
+key <- list()
+```
+
+# Parte A – Figuras do pacote
+
+```{r fig_arquitetura}
+png(fig("fig1_arquitetura"), width = 9, height = 5.4, units = "in", res = 300)
+par(mar = c(0, 0, 0, 0)); plot.new(); plot.window(c(0, 100), c(0, 62))
+bx <- function(x, y, w, h, t1, t2, fill) {
+  rect(x, y, x + w, y + h, col = fill, border = pal[["slate"]], lwd = 1.2)
+  text(x + w / 2, y + h - 2.8, t1, font = 2, cex = .74, col = pal[["navy"]])
+  text(x + w / 2, y + h / 2 - 1.8, t2, cex = .6, col = "#3B4650")
+}
+ar <- function(x0, y0, x1, y1) arrows(x0, y0, x1, y1, length = .07, lwd = 1.1, col = pal[["slate"]])
+xs <- seq(1, 85, length.out = 6); w <- 14.5
+for (i in 1:6) {
+  s <- tx$arch$steps[[i]]
+  bx(xs[i], 35, w, 21, s[1], s[2], if (i == 5) pal[["ice"]] else "white")
+  if (i < 6) ar(xs[i] + w, 45.5, xs[i + 1], 45.5)
+}
+for (i in 1:3) { s <- tx$arch$bottom[[i]]; bx(c(1, 35, 69)[i], 3, 30, 22, s[1], s[2], "#EEF3F7") }
+ar(92, 35, 84, 25); ar(50, 35, 50, 25); ar(35, 14, 31, 14); ar(65, 14, 69, 14)
+text(50, 60, tx$arch$top, cex = .7, col = pal[["teal"]], font = 3)
+dev.off()
+knitr::include_graphics(fig("fig1_arquitetura"))
+```
+
+```{r fig_etapas}
+f2 <- system.file("extdata", "leaf_example_02.jpg", package = "LeafInjuryR")
+r2 <- analyze_leaf(f2, crop = "auto", multiclass = TRUE)
+cls_img <- function(cm) {
+  cols <- grDevices::col2rgb(c("#FFFFFF", tissue_cols)) / 255
+  a <- array(0, c(dim(cm), 3)); for (ch in 1:3) a[, , ch] <- cols[ch, cm + 1L]; a
+}
+ov_cool <- function(r, alpha = 0.45) LI$create_leaf_overlay(r$cropped, r$class_map, alpha = alpha, multiclass = TRUE)
+png(fig("fig2_etapas"), width = 9, height = 6.2, units = "in", res = 300)
+op <- par(mfrow = c(2, 3))
+LI$plot_leaf_image(r2$cropped, main = tx$p2[1])
+LI$plot_leaf_image(LI$segment_leaf_mask(r2$cropped, "exg")$mask, main = tx$p2[2])
+LI$plot_leaf_image(LI$segment_leaf_mask(r2$cropped, "lab")$mask, main = tx$p2[3])
+LI$plot_leaf_image(r2$leaf_mask, main = tx$p2[4])
+LI$plot_leaf_image(cls_img(r2$class_map), main = tx$p2[5])
+LI$plot_leaf_image(ov_cool(r2), main = tx$p2[6])
+par(op); dev.off()
+knitr::include_graphics(fig("fig2_etapas"))
+```
+
+
+
+# Parte B – Validação frente aos avaliadores
+
+```{r dados}
+d <- as.data.frame(read_excel(params$data_xlsx))
+names(d)[1:8] <- c("trat", "rep", "Wilhan", "Andre", "Joao", "Felipe", "Visual_media_planilha", "LeafInjury")
+d$file <- sprintf("Tratamento %d (%d).jpg", d$trat, d$rep)      # apenas para localizar o arquivo
+d$id <- seq_len(nrow(d))
+orig <- c("Wilhan", "Andre", "Joao", "Felipe")
+raters <- paste0(if (L == "pt") "A" else "R", 1:4)                 # avaliadores anonimizados
+names(d)[match(orig, names(d))] <- raters
+d$vis <- apply(d[raters], 1, median)                                # referência: mediana dos quatro
+d$x <- d$LeafInjury; d$y <- d$vis
+n <- nrow(d); key$n <- n
+ccc <- function(x, y) { k <- length(x); sx <- var(x) * (k - 1) / k; sy <- var(y) * (k - 1) / k
+  2 * cov(x, y) * (k - 1) / k / (sx + sy + (mean(x) - mean(y))^2) }
+```
+
+
+## B0. Sensibilidade à regra e ao limiar de classificação (48 imagens)
+
+```{r sensibilidade48}
+methods_t <- c("lab", "hsv", "exgr", "vote", "auto", "relative")
+hs <- seq(90, 110, 2)
+cfg0 <- LI$leaf_config()
+sens_rows <- lapply(seq_len(n), function(i) {
+  cr <- crop_leaf(file.path(params$images_dir, d$file[i]))
+  arr <- LI$as_rgb_array(cr)
+  m <- LI$segment_leaf_mask(arr, "auto")$mask                   # mesma máscara para todas as regras
+  rule <- sapply(methods_t, function(mt) LI$calculate_injury(LI$classify_leaf_tissue(arr, m, mt, FALSE, cfg0))$injured_percent)
+  thr <- sapply(hs, function(h) { cfg <- LI$leaf_config(tissue = list(lab_healthy_hue_min = h))
+    LI$calculate_injury(LI$classify_leaf_tissue(arr, m, "lab", FALSE, cfg))$injured_percent })
+  list(rule = rule, thr = thr)
+})
+rule_df <- data.frame(id = rep(d$id, each = length(methods_t)), method = factor(rep(methods_t, n), methods_t),
+                      sev = unlist(lapply(sens_rows, `[[`, "rule")))
+thr_m <- do.call(rbind, lapply(sens_rows, `[[`, "thr")); colnames(thr_m) <- hs
+thr_df <- data.frame(id = rep(d$id, each = length(hs)), h = rep(hs, n), sev = as.vector(t(thr_m)))
+key$rule_summary <- do.call(rbind, tapply(rule_df$sev, rule_df$method, function(v) c(median = median(v), q1 = quantile(v, .25, names = FALSE), q3 = quantile(v, .75, names = FALSE))))
+key$rule_diff_per_image <- summary(apply(matrix(rule_df$sev, nrow = length(methods_t)), 2, function(v) diff(range(v))))
+key$thr_median <- apply(thr_m, 2, median)
+key$slope_98_102 <- median((thr_m[, "102"] - thr_m[, "98"]) / 4)
+key$ccc_by_thr <- apply(thr_m, 2, function(v) ccc(d$y, v))     # exploratório: concordância com a mediana visual
+key$bias_by_thr <- apply(thr_m, 2, function(v) mean(v - d$y))
+key$rule_summary; key$rule_diff_per_image; round(key$thr_median, 2); key$slope_98_102
+round(key$ccc_by_thr, 3); round(key$bias_by_thr, 2)
+
+pV <- ggplot(rule_df, aes(method, sev)) +
+  geom_violin(fill = pal[["mist"]], colour = pal[["steel"]], scale = "width", width = .85, linewidth = .4, trim = TRUE) +
+  geom_boxplot(width = .16, fill = "white", colour = pal[["navy"]], outlier.shape = NA, linewidth = .45) +
+  geom_point(position = position_jitter(width = .07, height = 0, seed = 1), size = .7, alpha = .45, colour = pal[["slate"]]) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(c(0, .03))) +
+  labs(x = if (L == "pt") "Regra de classificação" else "Classification rule", y = tx$inj, tag = "a")
+qd <- aggregate(sev ~ h, thr_df, function(v) c(med = median(v), q1 = quantile(v, .25, names = FALSE), q3 = quantile(v, .75, names = FALSE)))
+qd <- data.frame(h = qd$h, qd$sev)
+pS <- ggplot() +
+  geom_ribbon(data = qd, aes(h, ymin = q1, ymax = q3), fill = pal[["slate"]], alpha = .35) +
+  geom_line(data = qd, aes(h, med), colour = pal[["navy"]], linewidth = 1) +
+  geom_point(data = qd, aes(h, med), colour = pal[["navy"]], size = 1.6) +
+  geom_vline(xintercept = 100, linetype = 2, colour = pal[["grey"]]) +
+  scale_x_continuous(breaks = hs) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(c(0, .03))) +
+  labs(x = tx$hue, y = tx$inj, tag = "b")
+p4 <- patchwork::wrap_plots(pV, pS, widths = c(1, 1.1))
+ggsave(fig("fig4_sensibilidade"), p4, width = 9, height = 4, dpi = 300)
+p4
+```
+
+## B1. Variabilidade entre avaliadores
+
+```{r variabilidade}
+ccc <- function(x, y) { k <- length(x); sx <- var(x) * (k - 1) / k; sy <- var(y) * (k - 1) / k
+  2 * cov(x, y) * (k - 1) / k / (sx + sy + (mean(x) - mean(y))^2) }
+ccc_ci <- function(x, y) {
+  k <- length(x); r <- cor(x, y); rc <- ccc(x, y)
+  sx <- sd(x) * sqrt((k - 1) / k); sy <- sd(y) * sqrt((k - 1) / k); u <- (mean(x) - mean(y)) / sqrt(sx * sy)
+  se <- sqrt(((1 - r^2) * rc^2 / ((1 - rc^2) * r^2) + 2 * rc^3 * (1 - rc) * u^2 / (r * (1 - rc^2)^2) -
+              rc^4 * u^4 / (2 * r^2 * (1 - rc^2)^2)) / (k - 2))
+  c(ccc = rc, lwr = tanh(atanh(rc) - 1.96 * se), upr = tanh(atanh(rc) + 1.96 * se), r = r)
+}
+icc_a <- function(M) { M <- as.matrix(M); k <- ncol(M); m <- nrow(M); g <- mean(M)
+  ssr <- k * sum((rowMeans(M) - g)^2); ssc <- m * sum((colMeans(M) - g)^2); sse <- sum((M - g)^2) - ssr - ssc
+  msr <- ssr / (m - 1); msc <- ssc / (k - 1); mse <- sse / ((m - 1) * (k - 1))
+  c(A1 = (msr - mse) / (msr + (k - 1) * mse + k / m * (msc - mse)), Ak = (msr - mse) / (msr + (msc - mse) / m)) }
+rg <- apply(d[raters], 1, function(v) diff(range(v)))
+cvr <- apply(d[raters], 1, function(v) 100 * sd(v) / mean(v))
+key$range_median <- median(rg); key$range_p90 <- quantile(rg, .9); key$range_max <- max(rg)
+key$range_ge10 <- mean(rg >= 10) * 100; key$cv_median <- median(cvr)
+ic <- icc_a(d[raters]); icb <- replicate(params$n_boot, icc_a(d[sample.int(n, n, TRUE), raters]))
+key$icc <- ic; key$icc_ci <- apply(icb, 1, quantile, c(.025, .975))
+thr <- c(5, 10, 15, 20, 25)
+disag <- sapply(thr, function(t) mean(apply(d[raters], 1, function(v) any(v < t) & any(v >= t))) * 100)
+key$disag <- setNames(disag, thr)
+loo <- t(sapply(raters, function(r) { ref <- apply(d[setdiff(raters, r)], 1, median)
+  c(ccc_ci(ref, d[[r]]), MAE = mean(abs(d[[r]] - ref)), bias = mean(d[[r]] - ref)) }))
+key$loo <- loo
+rbind(range = summary(rg), cv = summary(cvr)); ic; key$icc_ci; disag; round(loo, 3)
+
+dl <- data.frame(ord = rank(d$vis, ties.method = "first"), id = d$id,
+                 rater = rep(raters, each = n), sev = unlist(d[raters]))
+dr <- data.frame(ord = rank(d$vis, ties.method = "first"), lo = apply(d[raters], 1, min),
+                 hi = apply(d[raters], 1, max), med = d$vis)
+ycap <- 45
+out_x <- dl$ord[which.max(dl$sev)]
+pA <- ggplot() +
+  geom_linerange(data = dr, aes(ord, ymin = lo, ymax = hi), colour = pal[["mist"]], linewidth = 2.2) +
+  geom_point(data = dl, aes(ord, sev, colour = rater, shape = rater), size = 1.7) +
+  geom_point(data = dr, aes(ord, med), shape = 95, size = 5, colour = "black") +
+  scale_colour_manual(tx$rater, values = rater_cols) + scale_shape_manual(tx$rater, values = c(16, 17, 15, 18)) +
+  coord_cartesian(ylim = c(0, ycap)) +
+  annotate("segment", x = out_x, xend = out_x, y = ycap - 6, yend = ycap - .5, colour = pal[["navy"]],
+           arrow = arrow(length = unit(.12, "cm")), linewidth = .4) +
+  annotate("text", x = out_x - 1, y = ycap - 4, hjust = 1, size = 3, colour = pal[["navy"]],
+           label = paste0(fmt(max(dl$sev), 0), "%")) +
+  labs(x = tx$imgs_ord, y = tx$sev, tag = "a") +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+pB <- ggplot(data.frame(t = factor(thr), p = disag), aes(t, p)) +
+  geom_col(fill = pal[["slate"]], width = .6) +
+  geom_text(aes(label = paste0(fmt(p, 1), "%")), vjust = -.4, size = 3.2, colour = pal[["navy"]]) +
+  scale_y_continuous(limits = c(0, max(disag) * 1.15), expand = expansion(c(0, .02))) +
+  labs(x = tx$thr, y = tx$disag, tag = "b")
+p5 <- patchwork::wrap_plots(pA, pB, widths = c(2.1, 1))
+ggsave(fig("fig5_variabilidade_avaliadores"), p5, width = 9, height = 3.9, dpi = 300)
+p5
+```
+
+## B2. Quanto o LeafInjuryR prediz a avaliação visual: modelos lineares e não lineares
+
+Resposta: severidade visual (mediana dos quatro avaliadores); preditor: severidade LeafInjuryR. Seleção por AICc e por validação cruzada *leave-one-out* (LOOCV).
+
+```{r modelos}
+fit_model <- function(m, dd) {
+  switch(m,
+    linear = lm(y ~ x, dd),
+    quadratic = lm(y ~ x + I(x^2), dd),
+    log = lm(y ~ log(x), dd),
+    power = { s <- coef(lm(log(y) ~ log(x), dd)); nls(y ~ a * x^b, dd, start = list(a = exp(s[[1]]), b = s[[2]])) },
+    asymptotic = nls(y ~ a * (1 - exp(-b * x)), dd, start = list(a = 1.3 * max(dd$y), b = 0.03),
+                     control = nls.control(maxiter = 500)))
+}
+models <- c("linear", "quadratic", "power", "log", "asymptotic")
+fits <- lapply(setNames(models, models), fit_model, dd = d)
+aicc <- function(f) { k <- length(coef(f)) + 1; AIC(f) + 2 * k * (k + 1) / (n - k - 1) }
+loo_pred <- function(m) sapply(seq_len(n), function(i) {
+  f <- tryCatch(fit_model(m, d[-i, ]), error = function(e) NULL)
+  if (is.null(f)) NA else predict(f, newdata = d[i, , drop = FALSE]) })
+lp <- sapply(models, loo_pred)
+tabm <- data.frame(model = tx$models[models],
+  equation = sapply(models, function(m) { cf <- coef(fits[[m]]); switch(m,
+    linear = sprintf("y = %s + %s x", fmt(cf[1]), fmt(cf[2], 3)),
+    quadratic = sprintf("y = %s + %s x %s %s x²", fmt(cf[1]), fmt(cf[2], 3), ifelse(cf[3] < 0, "−", "+"), fmt(abs(cf[3]), 5)),
+    power = sprintf("y = %s x^%s", fmt(cf[1], 3), fmt(cf[2], 3)),
+    log = sprintf("y = %s + %s ln x", fmt(cf[1]), fmt(cf[2])),
+    asymptotic = sprintf("y = %s (1 − e^(−%s x))", fmt(cf[1]), fmt(cf[2], 4))) }),
+  AICc = sapply(fits, aicc),
+  R2 = sapply(fits, function(f) 1 - sum(residuals(f)^2) / sum((d$y - mean(d$y))^2)),
+  RMSE = sapply(fits, function(f) sqrt(mean(residuals(f)^2))),
+  RMSE_cv = apply(lp, 2, function(p) sqrt(mean((p - d$y)^2, na.rm = TRUE))),
+  MAE_cv = apply(lp, 2, function(p) mean(abs(p - d$y), na.rm = TRUE)),
+  CCC_cv = apply(lp, 2, function(p) ccc(d$y, p)))
+tabm$dAICc <- tabm$AICc - min(tabm$AICc)
+best <- models[which.min(tabm$RMSE_cv)]
+nl <- setdiff(models, "linear"); best_nl <- nl[which.min(tabm$RMSE_cv[match(nl, models)])]
+key$best <- best; key$best_nl <- best_nl; key$tabm <- tabm
+key$lin_coef <- coef(fits$linear); key$lin_p_b <- summary(fits$linear)$coefficients[2, 4]
+tab_out <- tabm; num <- sapply(tab_out, is.numeric); tab_out[num] <- lapply(tab_out[num], round, 3)
+write.csv(tab_out, file.path(TD, paste0("modelos_", L, ".csv")), row.names = FALSE)
+tab_out
+```
+
+```{r bandas}
+grid <- data.frame(x = seq(min(d$x), max(d$x), length.out = 200))
+band_lm <- function(f) {
+  pc <- predict(f, grid, interval = "confidence"); pp <- predict(f, grid, interval = "prediction")
+  data.frame(grid, fit = pc[, 1], cl = pc[, 2], cu = pc[, 3], pl = pp[, 2], pu = pp[, 3])
+}
+band_boot <- function(m) {          # bandas por bootstrap de casos (modelos não lineares)
+  f <- fits[[m]]; fit0 <- predict(f, grid); sig <- sqrt(sum(residuals(f)^2) / df.residual(f))
+  B <- replicate(params$n_boot, { i <- sample.int(n, n, TRUE)
+    g <- tryCatch(fit_model(m, d[i, ]), error = function(e) NULL)
+    if (is.null(g)) rep(NA, nrow(grid)) else predict(g, grid) })
+  q <- apply(B, 1, quantile, c(.025, .975), na.rm = TRUE); se <- apply(B, 1, sd, na.rm = TRUE)
+  data.frame(grid, fit = fit0, cl = q[1, ], cu = q[2, ], pl = fit0 - 1.96 * sqrt(se^2 + sig^2),
+             pu = fit0 + 1.96 * sqrt(se^2 + sig^2))
+}
+bn <- if (best %in% c("linear", "quadratic", "log")) band_lm(fits[[best]]) else band_boot(best)
+cf <- coef(fits[[best]])
+eq_lbl <- switch(best,
+  power = sprintf("y = %s x^%s", fmt(cf[1], 3), fmt(cf[2], 3)),
+  linear = sprintf("y = %s + %s x", fmt(cf[1]), fmt(cf[2], 3)),
+  tabm$equation[models == best])
+r2_best <- tabm$R2[models == best]
+ymax <- ceiling(max(d$y, bn$pu, na.rm = TRUE) / 5) * 5
+pR <- ggplot() +
+  geom_ribbon(data = bn, aes(x, ymin = pmax(cl, 0), ymax = cu), fill = pal[["sage"]], alpha = .30) +
+  geom_line(data = bn, aes(x, fit), colour = pal[["navy"]], linewidth = .9) +
+  geom_point(data = d, aes(x, y), colour = pal[["slate"]], fill = "white", shape = 21, size = 2.1, stroke = .8) +
+  annotate("label", x = 0.5, y = 49, hjust = 0, vjust = 1, size = 3.2, label.size = .2, colour = pal[["navy"]],
+           fill = "white", parse = TRUE, label = if (best == "power")
+             sprintf('atop(y == "%s"~x^"%s", R^2 == "%s")', fmt(cf[1], 3), fmt(cf[2], 3), fmt(r2_best, 3))
+             else sprintf('atop("%s", R^2 == "%s")', eq_lbl, fmt(r2_best, 3))) +
+  scale_x_continuous(limits = c(0, NA), expand = expansion(c(0.01, .02))) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 10), expand = expansion(c(0, .02))) +
+  labs(x = tx$li, y = tx$vis, tag = "a")
+cvp <- data.frame(obs = d$y, pred = lp[, best])
+cc <- ccc_ci(cvp$obs, cvp$pred); key$cv_ccc <- cc; key$cv_mae <- mean(abs(cvp$pred - cvp$obs))
+lim <- c(0, ceiling(max(cvp) / 5) * 5)
+pC <- ggplot(cvp, aes(obs, pred)) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2, colour = pal[["grey"]]) +
+  geom_smooth(method = "lm", formula = y ~ x, colour = pal[["teal"]], fill = pal[["sage"]], alpha = .3, linewidth = .7) +
+  geom_point(colour = pal[["navy"]], size = 2, alpha = .85) +
+  annotate("label", x = lim[1] + .03 * diff(lim), y = 49, hjust = 0, vjust = 1, size = 3.1, label.size = .2,
+           colour = pal[["navy"]], fill = "white",
+           label = sprintf("CCC = %s [%s; %s]\n%s = %s p.p.", fmt(cc["ccc"], 3), fmt(cc["lwr"], 3), fmt(cc["upr"], 3),
+                           if (L == "pt") "EAM" else "MAE", fmt(key$cv_mae))) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 10), expand = expansion(c(0, .02))) +
+  coord_cartesian(xlim = lim) +
+  labs(x = tx$obs, y = tx$loo, tag = "b")
+p6 <- patchwork::wrap_plots(pR, pC, nrow = 1, widths = c(1, 1))
+ggsave(fig("fig6_regressao"), p6, width = 9, height = 4, dpi = 300)   # mesmo formato da Figura 4
+p6
+```
+
+## B3. Concordância bruta e após calibração (comparação com os avaliadores)
+
+```{r concordancia}
+raw <- ccc_ci(d$y, d$x)
+key$raw <- c(raw, MAE = mean(abs(d$x - d$y)), bias = mean(d$x - d$y))
+key$raw_strata <- tapply(d$x - d$y, cut(d$y, c(-Inf, 10, 20, Inf)), mean)
+comp <- rbind(cbind(loo[, c("ccc", "lwr", "upr", "r", "MAE")]),
+              "LeafInjuryR (bruto)" = c(raw, MAE = mean(abs(d$x - d$y))),
+              "LeafInjuryR (calibrado, LOOCV)" = c(cc, MAE = key$cv_mae))
+if (L == "en") rownames(comp)[5:6] <- c("LeafInjuryR (raw)", "LeafInjuryR (calibrated, LOOCV)")
+write.csv(round(comp, 3), file.path(TD, paste0("concordancia_", L, ".csv")))
+round(comp, 3)
+```
+
+## B4. Imagens representativas
+
+```{r painel}
+q <- quantile(d$y, c(.10, .45, .75, .97))
+sel <- sapply(q, function(v) which.min(abs(d$y - v)))
+key$panel <- d[sel, c("id", "x", "y")]
+png(fig("fig7_imagens"), width = 9, height = 4.6, units = "in", res = 300)
+op <- par(mfrow = c(2, 4), mar = c(.3, .3, 2, .3))
+rs <- lapply(sel, function(i) analyze_leaf(file.path(params$images_dir, d$file[i]), crop = "auto", multiclass = TRUE))
+for (k in seq_along(sel)) LI$plot_leaf_image(rs[[k]]$cropped, main = sprintf("%s %d", tx$img, k))
+for (k in seq_along(sel)) LI$plot_leaf_image(ov_cool(rs[[k]]), cex.main = .82, main = sprintf(paste0("LeafInjuryR %s%% · ", tx$obs_short, " %s%%"),
+  fmt(rs[[k]]$metrics$injured_percent, 1), fmt(d$y[sel[k]], 1)))
+par(op); dev.off()
+knitr::include_graphics(fig("fig7_imagens"))
+```
+
+## Exportação
+
+```{r export}
+saveRDS(key, file.path(TD, paste0("resultados_chave_", L, ".rds")))
+str(key, max.level = 1)
+sessionInfo()
+```

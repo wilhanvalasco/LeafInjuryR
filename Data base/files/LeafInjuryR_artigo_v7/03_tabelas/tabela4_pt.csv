@@ -1,0 +1,8 @@
+﻿"Característica","ImageJ/Fiji","PlantCV","pliman","Assess / Leaf Doctor","LeafInjuryR"
+"Ambiente","Java; interface gráfica e macros","Biblioteca Python","Pacote R","Programa e aplicativo dedicados","Pacote R e Shiny local"
+"Programação necessária","Opcional (macros)","Sim","Sim","Não","Opcional"
+"Processamento em lote","Por macro","Sim","Sim","Limitado","Sim, com isolamento de erros"
+"Separação explícita folha/tecido","Definida pelo usuário","Definida pelo usuário","Por paletas ou índices","Não explícita","Sim, obrigatória"
+"Correção manual registrada","Não automática","Não","Não","Não","Sim"
+"Registro automático de parâmetros e MD5","Não","Parcial","Parcial","Não","Sim"
+"Métricas de validação integradas","Por plugins","Não específicas","Não específicas","Não","IoU, Dice, Se, Sp, Pr, F1"

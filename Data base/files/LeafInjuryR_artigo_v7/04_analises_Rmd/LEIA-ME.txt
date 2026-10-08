@@ -1,0 +1,26 @@
+ANALISES E FIGURAS DO ARTIGO LeafInjuryR - como usar
+====================================================
+
+1. No RStudio, defina esta pasta como diretorio de trabalho
+   (Session > Set Working Directory > To Source File Location).
+2. Pacotes: LeafInjuryR, readxl, ggplot2, patchwork, rmarkdown, knitr.
+3. Portugues:
+     rmarkdown::render("analise_LeafInjuryR_artigo.Rmd", params = list(lang = "pt"),
+                       output_file = "analise_artigo_PT.html")
+   Ingles:
+     rmarkdown::render("analise_LeafInjuryR_artigo.Rmd", params = list(lang = "en"),
+                       output_file = "analise_artigo_EN.html")
+   (ou Knit > Knit with Parameters)
+
+Todas as 7 figuras do artigo sao geradas pelo Rmd (exceto a Figura 3, captura de tela
+da interface), em resultados/figuras, com sufixo _pt ou _en (PNG, 300 dpi).
+Tabelas em resultados/tabelas.
+
+Para mudar textos: edite a lista `tx` no primeiro bloco.
+Para mudar cores: edite `pal` (graficos) e `tissue_cols` (classes de tecido).
+
+Referencia visual = mediana dos 4 avaliadores. Resposta = visual; preditor = LeafInjuryR.
+Modelos: linear, quadratico, potencia, logaritmico, assintotico; selecao por AICc e
+validacao cruzada leave-one-out; bandas de confianca e predicao de 95%.
+Avaliadores anonimizados: A1 = Wilhan, A2 = Andre, A3 = Joao, A4 = Felipe (pt; R1-R4 em en).
+Os tratamentos NAO sao usados nas analises (a coluna so serve para localizar os arquivos).
