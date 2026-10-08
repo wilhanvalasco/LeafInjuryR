@@ -34,10 +34,10 @@ Suggests: shiny (>= 1.7.0), bslib, DT, testthat (>= 3.0.0), knitr,
 biocViews:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-RoxygenNote: 7.3.1
 URL: https://github.com/wilhanvalasco/LeafInjuryR
 BugReports: https://github.com/wilhanvalasco/LeafInjuryR/issues
 NeedsCompilation: no
 Packaged: 2026-10-04 17:41:00 UTC; root
 Author: Wilhan Valasco dos Santos [aut, cre, cph]
 Maintainer: Wilhan Valasco dos Santos <wilhanvalasco@hotmail.com>
+Config/roxygen2/version: 8.1.0
