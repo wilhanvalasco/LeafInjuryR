@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="man/figures/logo.png" alt="LeafInjuryR logo" width="140">
 </p>
@@ -318,41 +319,18 @@ GPL (>= 3)
 
 <sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub>
 
-<br><br>
+<img
+  src="https://img.shields.io/badge/%20-1DBB73?style=flat-square"
+  alt=""
+  width="72"
+  height="3"
+>
 
-<table>
-  <tr>
-    <td align="center" width="200">
-      <sub>DOCTORATE</sub><br>
-      <b>PhD Candidate</b><br>
-      Biotechnology and Biodiversity<br>
-      <sub>IF Goiano</sub>
-    </td>
-    <td align="center" width="200">
-      <sub>MASTER'S</sub><br>
-      <b>MSc</b><br>
-      Plant Protection<br>
-      <sub>IF Goiano</sub>
-    </td>
-    <td align="center" width="200">
-      <sub>BACHELOR'S</sub><br>
-      <b>Agronomist</b><br>
-      Agronomy<br>
-      <sub>IF Goiano</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" colspan="3">
-      <sub>SPECIALIZATIONS</sub><br>
-      <b>Data Science</b> &nbsp;<sub>FMSP</sub>
-      &nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;
-      <b>MBA in Business Management</b> &nbsp;<sub>IF Goiano</sub>
-    </td>
-  </tr>
-</table>
-
-<br>
-
+<img
+  src="man/figures/academic-profile.svg"
+  width="100%"
+  alt="Academic profile: PhD Candidate in Biotechnology and Biodiversity (IF Goiano); Master's degree in Plant Protection (IF Goiano); Bachelor's degree in Agronomy (IF Goiano); Specialist in Data Science (FMSP); MBA in Business Management (IF Goiano)"
+>
 <a href="mailto:wilhan.santos@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: wilhan.santos@hotmail.com"></a>
 &nbsp;
 <a href="https://wa.me/5564992862039"><img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&logo=whatsapp&logoColor=25D366" alt="WhatsApp: +55 64 99286-2039"></a>
