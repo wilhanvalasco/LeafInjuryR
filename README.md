@@ -1,4 +1,3 @@
-
 <p align="center">
   <img src="man/figures/logo.png" alt="LeafInjuryR logo" width="140">
 </p>
@@ -297,32 +296,70 @@ GPL (>= 3)
 
 ## Author
 
-<table class="author-card" width="100%">
+<br>
+
+<div align="center">
+
+<img src="man/figures/author.png" alt="Wilhan Valasco dos Santos" width="230">
+
+<br><br>
+
+<sub><b>D E V E L O P E R &nbsp;&nbsp;·&nbsp;&nbsp; M A I N T A I N E R</b></sub>
+
+<h1>WILHAN VALASCO DOS SANTOS</h1>
+
+<img src="https://img.shields.io/badge/%20-1DBB73?style=flat-square" alt="" width="72" height="3">
+
+<p>
+  <i>Agronomist and data scientist building open tools for plant science.</i>
+</p>
+
+<br>
+
+<sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub>
+
+<br><br>
+
+<table>
   <tr>
-    <td class="author-photo" width="38%" align="center" valign="bottom">
-      <div class="author-frame">
-        <img src="man/figures/author.png" alt="Wilhan Valasco dos Santos" width="300">
-      </div>
+    <td align="center" width="200">
+      <sub>DOCTORATE</sub><br>
+      <b>PhD Candidate</b><br>
+      Biotechnology and Biodiversity<br>
+      <sub>IF Goiano</sub>
     </td>
-    <td class="author-info" valign="middle">
-      <p class="author-eyebrow"><sub>DEVELOPER AND MAINTAINER</sub></p>
-      <h3 class="author-name">Wilhan Valasco dos Santos</h3>
-      <p class="author-role">Agronomist and data scientist building open tools for plant science.</p>
-      <ul class="author-cv">
-        <li><b>Agronomist</b><br><span>IF Goiano</span></li>
-        <li><b>MSc in Plant Protection</b><br><span>IF Goiano</span></li>
-        <li><b>PhD candidate in Biotechnology and Biodiversity</b><br><span>IF Goiano</span></li>
-        <li><b>Specialist in Data Science</b><br><span>FMSP</span></li>
-        <li><b>MBA in Business Management</b><br><span>IF Goiano</span></li>
-      </ul>
-      <p class="author-contact">
-        <a class="author-btn author-btn-primary" href="mailto:wilhan.santos@hotmail.com">wilhan.santos@hotmail.com</a>
-        &nbsp;
-        <a class="author-btn" href="https://wa.me/5564992862039">+55 (64) 99286-2039</a>
-      </p>
+    <td align="center" width="200">
+      <sub>MASTER'S</sub><br>
+      <b>MSc</b><br>
+      Plant Protection<br>
+      <sub>IF Goiano</sub>
+    </td>
+    <td align="center" width="200">
+      <sub>BACHELOR'S</sub><br>
+      <b>Agronomist</b><br>
+      Agronomy<br>
+      <sub>IF Goiano</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="3">
+      <sub>SPECIALIZATIONS</sub><br>
+      <b>Data Science</b> &nbsp;<sub>FMSP</sub>
+      &nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;
+      <b>MBA in Business Management</b> &nbsp;<sub>IF Goiano</sub>
     </td>
   </tr>
 </table>
+
+<br>
+
+<a href="mailto:wilhan.santos@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: wilhan.santos@hotmail.com"></a>
+&nbsp;
+<a href="https://wa.me/5564992862039"><img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&logo=whatsapp&logoColor=25D366" alt="WhatsApp: +55 64 99286-2039"></a>
+&nbsp;
+<a href="https://github.com/wilhanvalasco"><img src="https://img.shields.io/badge/GitHub-wilhanvalasco-1F2933?style=for-the-badge&logo=github&logoColor=white" alt="GitHub: wilhanvalasco"></a>
+
+</div>
 
 <br>
 
