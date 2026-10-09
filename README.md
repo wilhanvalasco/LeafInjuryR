@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="man/figures/logo.png" alt="LeafInjuryR logo" width="140">
 </p>
@@ -54,9 +55,12 @@
 
 <br>
 
-$$
-\text{Injury (\%)} = \frac{\text{injured pixels}}{\text{leaf-mask pixels}} \times 100
-$$
+<p align="center">
+  <img
+    src="https://latex.codecogs.com/svg.image?\dpi{160}\text{Injury&space;(\%)}=\frac{\text{Injured&space;pixels}}{\text{Leaf-mask&space;pixels}}\times100"
+    alt="Injury (%) = (Injured pixels / Leaf-mask pixels) × 100"
+    width="440">
+</p>
 
 <p align="center"><sub>Background pixels never enter the calculation.</sub></p>
 
@@ -221,9 +225,12 @@ Physical area is reported only when a valid scale is supplied.
 result <- analyze_leaf(file, pixels_per_cm = 118.4)
 ```
 
-$$
-\text{Area (cm}^2\text{)} = \frac{\text{area (pixels)}}{(\text{pixels per cm})^2}
-$$
+<p align="center">
+  <img
+    src="https://latex.codecogs.com/svg.image?\dpi{160}\text{Area&space;(cm}^{2}\text{)}=\frac{\text{Area&space;(pixels)}}{(\text{Pixels&space;per&space;cm})^{2}}"
+    alt="Area (cm²) = Area (pixels) / (Pixels per cm)²"
+    width="380">
+</p>
 
 <br>
 
@@ -290,27 +297,29 @@ GPL (>= 3)
 
 ## Author
 
-<table>
+<table class="author-card" width="100%">
   <tr>
-    <td width="220" align="center" valign="middle">
-      <a href="man/figures/author_full.png" title="Open full-size photo">
-        <img src="man/figures/author.png" alt="Wilhan Valasco dos Santos" width="190">
-      </a>
-      <br>
-      <sub>Click the photo to enlarge</sub>
+    <td class="author-photo" width="38%" align="center" valign="bottom">
+      <div class="author-frame">
+        <img src="man/figures/author.png" alt="Wilhan Valasco dos Santos" width="300">
+      </div>
     </td>
-    <td valign="middle">
-      <h3>Wilhan Valasco dos Santos</h3>
-      <sub>Developer and maintainer of LeafInjuryR</sub>
-      <br><br>
-      Agronomist, <b>IF Goiano</b><br>
-      MSc in Plant Protection, <b>IF Goiano</b><br>
-      PhD candidate in Biotechnology and Biodiversity, <b>IF Goiano</b><br>
-      Specialist in Data Science, <b>FMSP</b><br>
-      MBA in Business Management, <b>IF Goiano</b>
-      <br><br>
-      <a href="mailto:wilhan.santos@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-1DBB73?style=flat-square&logo=maildotru&logoColor=white" alt="Email"></a>
-      <a href="https://wa.me/5564992862039"><img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-25D366?style=flat-square&logo=whatsapp&logoColor=white" alt="WhatsApp +55 64 99286-2039"></a>
+    <td class="author-info" valign="middle">
+      <p class="author-eyebrow"><sub>DEVELOPER AND MAINTAINER</sub></p>
+      <h3 class="author-name">Wilhan Valasco dos Santos</h3>
+      <p class="author-role">Agronomist and data scientist building open tools for plant science.</p>
+      <ul class="author-cv">
+        <li><b>Agronomist</b><br><span>IF Goiano</span></li>
+        <li><b>MSc in Plant Protection</b><br><span>IF Goiano</span></li>
+        <li><b>PhD candidate in Biotechnology and Biodiversity</b><br><span>IF Goiano</span></li>
+        <li><b>Specialist in Data Science</b><br><span>FMSP</span></li>
+        <li><b>MBA in Business Management</b><br><span>IF Goiano</span></li>
+      </ul>
+      <p class="author-contact">
+        <a class="author-btn author-btn-primary" href="mailto:wilhan.santos@hotmail.com">wilhan.santos@hotmail.com</a>
+        &nbsp;
+        <a class="author-btn" href="https://wa.me/5564992862039">+55 (64) 99286-2039</a>
+      </p>
     </td>
   </tr>
 </table>

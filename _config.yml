@@ -1,7 +1,15 @@
+
 title: LeafInjuryR
 description: Digital Leaf Injury Quantification
 theme: jekyll-theme-primer
+
 markdown: kramdown
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+  parse_block_html: true
+  math_engine: mathjax
 
 exclude:
   - "Data base"

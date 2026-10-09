@@ -1,0 +1,12 @@
+url: https://wilhanvalasco.github.io/LeafInjuryR/
+
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    primary: "#1DBB73"
+    fg: "#17343A"
+    bg: "#FFFFFF"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
