@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&logo=r&logoColor=white" alt="R >= 4.2"></a>
+  <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&amp;logo=r&amp;logoColor=white" alt="R >= 4.2"></a>
   <a href="https://bioconductor.org/packages/EBImage/"><img src="https://img.shields.io/badge/Bioconductor-EBImage-87B13F?style=flat-square" alt="EBImage"></a>
   <a href="https://shiny.posit.co/"><img src="https://img.shields.io/badge/Shiny-app-1F65CC?style=flat-square" alt="Shiny"></a>
   <img src="https://img.shields.io/badge/version-0.2.0-19A765?style=flat-square" alt="version 0.2.0">
@@ -299,43 +299,56 @@ GPL (>= 3)
 
 <br>
 
-<div align="center">
+<div align="center" markdown="0">
 
-<img src="man/figures/author.png" alt="Wilhan Valasco dos Santos" width="230">
+  <img src="man/figures/author.png"
+       alt="Wilhan Valasco dos Santos"
+       width="230">
 
-<br><br>
+  <p>
+    <sub><b>D E V E L O P E R &nbsp;&nbsp;·&nbsp;&nbsp; M A I N T A I N E R</b></sub>
+  </p>
 
-<sub><b>D E V E L O P E R &nbsp;&nbsp;·&nbsp;&nbsp; M A I N T A I N E R</b></sub>
+  <h1>WILHAN VALASCO DOS SANTOS</h1>
 
-<h1>WILHAN VALASCO DOS SANTOS</h1>
+  <p>
+    <span style="display:inline-block;width:72px;height:3px;background-color:#1DBB73;border-radius:3px;"></span>
+  </p>
 
-<img src="https://img.shields.io/badge/%20-1DBB73?style=flat-square" alt="" width="72" height="3">
+  <p>
+    <i>Agronomist and data scientist building open tools for plant science.</i>
+  </p>
 
-<p>
-  <i>Agronomist and data scientist building open tools for plant science.</i>
-</p>
+  <p>
+    <sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub>
+  </p>
 
-<br>
+  <p>
+    <span style="display:inline-block;width:72px;height:3px;background-color:#1DBB73;border-radius:3px;"></span>
+  </p>
 
-<sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub>
+  <p>
+    <img src="man/figures/academic-profile.svg"
+         width="100%"
+         alt="Academic profile: PhD Candidate in Biotechnology and Biodiversity (IF Goiano); Master's degree in Plant Protection (IF Goiano); Bachelor's degree in Agronomy (IF Goiano); Specialist in Data Science (FMSP); MBA in Business Management (IF Goiano)">
+  </p>
 
-<img
-  src="https://img.shields.io/badge/%20-1DBB73?style=flat-square"
-  alt=""
-  width="72"
-  height="3"
->
-
-<img
-  src="man/figures/academic-profile.svg"
-  width="100%"
-  alt="Academic profile: PhD Candidate in Biotechnology and Biodiversity (IF Goiano); Master's degree in Plant Protection (IF Goiano); Bachelor's degree in Agronomy (IF Goiano); Specialist in Data Science (FMSP); MBA in Business Management (IF Goiano)"
->
-<a href="mailto:wilhan.santos@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: wilhan.santos@hotmail.com"></a>
-&nbsp;
-<a href="https://wa.me/5564992862039"><img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&logo=whatsapp&logoColor=25D366" alt="WhatsApp: +55 64 99286-2039"></a>
-&nbsp;
-<a href="https://github.com/wilhanvalasco"><img src="https://img.shields.io/badge/GitHub-wilhanvalasco-1F2933?style=for-the-badge&logo=github&logoColor=white" alt="GitHub: wilhanvalasco"></a>
+  <p>
+    <a href="mailto:wilhan.santos@hotmail.com">
+      <img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&amp;logo=maildotru&amp;logoColor=white"
+           alt="Email: wilhan.santos@hotmail.com">
+    </a>
+    &nbsp;
+    <a href="https://wa.me/5564992862039">
+      <img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&amp;logo=whatsapp&amp;logoColor=25D366"
+           alt="WhatsApp: +55 64 99286-2039">
+    </a>
+    &nbsp;
+    <a href="https://github.com/wilhanvalasco">
+      <img src="https://img.shields.io/badge/GitHub-wilhanvalasco-1F2933?style=for-the-badge&amp;logo=github&amp;logoColor=white"
+           alt="GitHub: wilhanvalasco">
+    </a>
+  </p>
 
 </div>
 

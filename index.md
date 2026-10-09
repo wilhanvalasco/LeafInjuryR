@@ -43,11 +43,36 @@ window.MathJax = {
 .leafinjuryr-content {
   overflow-wrap: break-word;
 }
+
+/* Improve academic profile SVG display */
+.leafinjuryr-content img[src$="academic-profile.svg"] {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 16px auto;
+}
+
+/* Keep contact badges aligned */
+.leafinjuryr-content a {
+  text-decoration: none;
+}
+
+/* Improve responsive layout */
+@media (max-width: 768px) {
+  .leafinjuryr-content img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .leafinjuryr-content table {
+    display: block;
+    overflow-x: auto;
+  }
+}
 </style>
 
 <div class="leafinjuryr-content" markdown="1">
 
-{% capture readme %}{% include_relative README.md %}{% endcapture %}
-{{ readme | markdownify }}
+{% include_relative README.md %}
 
 </div>
