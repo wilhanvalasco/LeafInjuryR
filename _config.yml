@@ -1,0 +1,15 @@
+title: LeafInjuryR
+description: Digital Leaf Injury Quantification
+theme: jekyll-theme-primer
+markdown: kramdown
+
+exclude:
+  - "Data base"
+  - "vignettes"
+  - "tests"
+  - "R"
+  - "inst"
+  - "renv"
+  - "README.html"
+  - "*.Rmd"
+  - "*.Rproj"
