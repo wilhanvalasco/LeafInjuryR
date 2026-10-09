@@ -10,7 +10,17 @@ kramdown:
   hard_wrap: false
   parse_block_html: true
   math_engine: mathjax
+  auto_ids: true
+  entity_output: as_char
+  syntax_highlighter: rouge
 
+# GitHub Pages
+encoding: utf-8
+
+# HTML and Markdown rendering
+show_downloads: false
+
+# Existing exclusions
 exclude:
   - "Data base"
   - "vignettes"
