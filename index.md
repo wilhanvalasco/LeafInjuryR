@@ -71,8 +71,8 @@ window.MathJax = {
 }
 </style>
 
-<div class="leafinjuryr-content" markdown="1">
+{% capture readme_content %}{% include_relative README.md %}{% endcapture %}
 
-{% include_relative README.md %}
-
+<div class="leafinjuryr-content">
+{{ readme_content | markdownify }}
 </div>
