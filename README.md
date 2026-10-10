@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&amp;logo=r&amp;logoColor=white" alt="R >= 4.2"></a>
+  <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&logo=r&logoColor=white" alt="R >= 4.2"></a>
   <a href="https://bioconductor.org/packages/EBImage/"><img src="https://img.shields.io/badge/Bioconductor-EBImage-87B13F?style=flat-square" alt="EBImage"></a>
   <a href="https://shiny.posit.co/"><img src="https://img.shields.io/badge/Shiny-app-1F65CC?style=flat-square" alt="Shiny"></a>
   <img src="https://img.shields.io/badge/version-0.2.0-19A765?style=flat-square" alt="version 0.2.0">
@@ -19,12 +19,13 @@
 </p>
 
 <p align="center">
-  <a href="#installation">Install</a> &nbsp;&nbsp;&nbsp;
-  <a href="#quick-start">Quick start</a> &nbsp;&nbsp;&nbsp;
-  <a href="#the-app">The app</a> &nbsp;&nbsp;&nbsp;
-  <a href="#how-it-works">How it works</a> &nbsp;&nbsp;&nbsp;
-  <a href="#validation">Validation</a> &nbsp;&nbsp;&nbsp;
-  <a href="#citation">Citation</a> &nbsp;&nbsp;&nbsp;
+  <a href="#image-acquisition-guidelines">Image guidelines</a> &nbsp;&nbsp;
+  <a href="#installation">Install</a> &nbsp;&nbsp;
+  <a href="#quick-start">Quick start</a> &nbsp;&nbsp;
+  <a href="#the-app">The app</a> &nbsp;&nbsp;
+  <a href="#how-it-works">How it works</a> &nbsp;&nbsp;
+  <a href="#validation">Validation</a> &nbsp;&nbsp;
+  <a href="#citation">Citation</a> &nbsp;&nbsp;
   <a href="#author">Author</a>
 </p>
 
@@ -35,6 +36,208 @@
 </p>
 
 <br>
+
+<!-- IMAGE ACQUISITION GUIDELINES -->
+
+<style>
+/* LeafInjuryR — Compact scientific acquisition cards */
+
+.capture-cards {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+  margin: 38px 0 26px;
+  padding: 16px 3px 18px;
+  overflow-x: auto;
+}
+
+.capture-card {
+  position: relative;
+  min-width: 0;
+  min-height: 235px;
+  box-sizing: border-box;
+  padding: 48px 14px 19px;
+  border: 1px solid #D7DDE5;
+  border-radius: 18px;
+  background: #FFFFFF;
+  box-shadow: 0 5px 18px rgba(35,55,80,.055);
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.capture-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(35,55,80,.11);
+}
+
+.capture-card-number {
+  position: absolute;
+  top: -13px;
+  left: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1768C7;
+  color: #FFFFFF;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.capture-card:nth-child(even) .capture-card-number {
+  background: #4B5563;
+}
+
+.capture-card-line {
+  height: 1px;
+  margin: 0 0 20px 43px;
+  background: #1768C7;
+}
+
+.capture-card:nth-child(even) .capture-card-line {
+  background: #4B5563;
+}
+
+.capture-card h3 {
+  margin: 0 0 13px;
+  color: #142B45;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: .2px;
+}
+
+.capture-card p {
+  margin: 0;
+  color: #566276;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.capture-card-progress {
+  height: 5px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-bottom: 4px solid #E2E6EC;
+  position: relative;
+}
+
+.capture-card-progress::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 42%;
+  height: 4px;
+  border-radius: 4px;
+  background: #1768C7;
+}
+
+.capture-card:nth-child(even) .capture-card-progress::after {
+  background: #4B5563;
+}
+
+.capture-important {
+  margin: 22px 0;
+  padding: 17px 20px;
+  border: 1px solid #D6E6E3;
+  border-left: 3px solid #1768C7;
+  border-radius: 12px;
+  background: #F8FAFC;
+  color: #526276;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1200px) {
+  .capture-cards {
+    grid-template-columns: repeat(7, 155px);
+  }
+}
+
+@media (max-width: 600px) {
+  .capture-card {
+    min-height: 215px;
+  }
+}
+</style>
+
+## Image acquisition guidelines
+
+Standardized image acquisition is essential for accurate leaf segmentation and reliable quantification of visual injury. Consistent photographic conditions reduce background interference, illumination artifacts and classification errors, improving reproducibility across samples.
+
+<p align="center">
+  <img src="man/figures/captura.png" alt="Recommended photographic setup for standardized leaf image acquisition" width="90%">
+</p>
+
+<p align="center">
+  <sub>Recommended photographic conditions for consistent and reproducible leaf injury assessment.</sub>
+</p>
+
+<br>
+
+<div class="capture-cards">
+<div class="capture-card">
+<div class="capture-card-number">01</div>
+<div class="capture-card-line"></div>
+<h3>FRAMING</h3>
+<p>Keep the entire leaf visible, occupying most of the photograph without cropping its margins.</p>
+<div class="capture-card-progress"></div>
+</div>
+<div class="capture-card">
+<div class="capture-card-number">02</div>
+<div class="capture-card-line"></div>
+<h3>BACKGROUND</h3>
+<p>Use a uniform, matte white surface, preferably plain white paper.</p>
+<div class="capture-card-progress"></div>
+</div>
+<div class="capture-card">
+<div class="capture-card-number">03</div>
+<div class="capture-card-line"></div>
+<h3>LIGHTING</h3>
+<p>Prefer soft, diffuse illumination. Avoid shadows, direct sunlight and glare.</p>
+<div class="capture-card-progress"></div>
+</div>
+<div class="capture-card">
+<div class="capture-card-number">04</div>
+<div class="capture-card-line"></div>
+<h3>CAMERA ANGLE</h3>
+<p>Position the camera perpendicular to the leaf surface, approximately 90 degrees.</p>
+<div class="capture-card-progress"></div>
+</div>
+<div class="capture-card">
+<div class="capture-card-number">05</div>
+<div class="capture-card-line"></div>
+<h3>IMAGE SHARPNESS</h3>
+<p>Keep the entire leaf in focus and avoid camera movement.</p>
+<div class="capture-card-progress"></div>
+</div>
+<div class="capture-card">
+<div class="capture-card-number">06</div>
+<div class="capture-card-line"></div>
+<h3>LEAF CONDITION</h3>
+<p>Keep the leaf flat, clean and dry, preserving visible injury symptoms.</p>
+<div class="capture-card-progress"></div>
+</div>
+<div class="capture-card">
+<div class="capture-card-number">07</div>
+<div class="capture-card-line"></div>
+<h3>IMAGE QUALITY</h3>
+<p>Use the original camera resolution without filters or artificial colour enhancement.</p>
+<div class="capture-card-progress"></div>
+</div>
+</div>
+
+<div class="capture-important">
+<strong>IMPORTANT.</strong> Standardized photographic conditions minimize segmentation variability and tissue misclassification, supporting more accurate, consistent and reproducible measurements of injured leaf area.
+</div>
+
+<br>
+
+<!-- END IMAGE ACQUISITION GUIDELINES -->
 
 <table>
   <tr>
@@ -57,7 +260,7 @@
 
 <p align="center">
   <img
-    src="https://latex.codecogs.com/svg.image?\dpi{160}\text{Injury&space;(\%)}=\frac{\text{Injured&space;pixels}}{\text{Leaf-mask&space;pixels}}\times100"
+    src="https://latex.codecogs.com/svg.image?\dpi{160}\text{Injury&space;(\\%)}=\frac{\text{Injured&space;pixels}}{\text{Leaf-mask&space;pixels}}\times100"
     alt="Injury (%) = (Injured pixels / Leaf-mask pixels) × 100"
     width="440">
 </p>
