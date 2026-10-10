@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title }}</title>
+<meta name="description" content="{{ page.description }}">
+
+<style>
+/* GENERAL */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: #F7F9FC;
+  color: #263344;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  line-height: 1.65;
+}
+
+.page-container { max-width: 1012px; margin: 32px auto; padding: 0 24px; }
+
+/* Nothing may push the page wider than the screen */
+.leafinjuryr-content > * { max-width: 100%; }
+.leafinjuryr-content svg { max-width: 100%; height: auto; }
+.leafinjuryr-content div.highlighter-rouge,
+.leafinjuryr-content div.highlight { max-width: 100%; overflow-x: auto; }
+
+.leafinjuryr-content {
+  padding: 48px 52px;
+  background: #FFFFFF;
+  border: 1px solid #E6EAF0;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(35,55,80,.04);
+  overflow-wrap: break-word;
+}
+
+.leafinjuryr-content img { max-width: 100%; height: auto; }
+.leafinjuryr-content [align="center"] { text-align: center; }
+.leafinjuryr-content a { color: #1768C7; text-decoration: none; }
+.leafinjuryr-content a:hover { text-decoration: underline; }
+
+.leafinjuryr-content h1,
+.leafinjuryr-content h2,
+.leafinjuryr-content h3 { color: #142B45; }
+
+.leafinjuryr-content h2 {
+  margin-top: 44px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #E7EBF0;
+}
+
+.leafinjuryr-content pre {
+  padding: 18px;
+  overflow-x: auto;
+  border: 1px solid #E5EAF0;
+  border-radius: 10px;
+  background: #F5F7FA;
+  font-size: 13px;
+}
+
+.leafinjuryr-content code { font-family: SFMono-Regular, Consolas, monospace; }
+
+.leafinjuryr-content table { border-collapse: collapse; display: block; max-width: 100%; overflow-x: auto; }
+
+.leafinjuryr-content table:not(.capture-protocol) th,
+.leafinjuryr-content table:not(.capture-protocol) td {
+  padding: 12px;
+  border: 1px solid #E3E8EF;
+}
+
+.leafinjuryr-content blockquote {
+  margin: 22px 0;
+  padding: 14px 20px;
+  border-left: 3px solid #1768C7;
+  border-radius: 0 12px 12px 0;
+  background: #F6F9FC;
+  color: #536376;
+}
+
+.leafinjuryr-content blockquote p { margin: 0; }
+
+.leafinjuryr-content img[src$="academic-profile.svg"] {
+  display: block;
+  margin: 16px auto;
+}
+
+/* Mermaid diagram */
+.leafinjuryr-content pre.mermaid {
+  background: transparent;
+  border: 0;
+  text-align: center;
+}
+
+/* CAPTURE PROTOCOL (cards) */
+.leafinjuryr-content table.capture-protocol {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 9px 0;
+  margin: 38px 0 28px;
+  background: transparent;
+}
+
+.leafinjuryr-content .capture-protocol tr { background: transparent; }
+
+.leafinjuryr-content .capture-protocol th {
+  height: 60px;
+  padding: 0 0 8px 4px;
+  vertical-align: bottom;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: #1768C7;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.leafinjuryr-content .capture-protocol th:nth-child(even) { color: #4B5563; }
+
+.leafinjuryr-content .capture-protocol td {
+  position: relative;
+  height: 225px;
+  padding: 22px 12px 35px;
+  vertical-align: top;
+  border: 1px solid #D9DFE8;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 5px 18px rgba(35,55,80,.05);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.leafinjuryr-content .capture-protocol td:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(35,55,80,.11);
+}
+
+.leafinjuryr-content .capture-protocol td b {
+  display: block;
+  margin-bottom: 12px;
+  color: #142B45;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.leafinjuryr-content .capture-protocol td p {
+  margin: 0;
+  color: #566276;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.leafinjuryr-content .capture-protocol td::after {
+  content: "";
+  position: absolute;
+  bottom: 15px;
+  left: 12px;
+  width: 42%;
+  height: 4px;
+  border-radius: 4px;
+  background: #1768C7;
+}
+
+.leafinjuryr-content .capture-protocol td:nth-child(even)::after { background: #4B5563; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .leafinjuryr-content .capture-protocol td { transition: none; }
+  .leafinjuryr-content .capture-protocol td:hover { transform: none; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .leafinjuryr-content { padding: 32px 24px; }
+
+  .leafinjuryr-content table.capture-protocol {
+    display: block;
+    overflow-x: auto;
+    table-layout: auto;
+  }
+
+  .leafinjuryr-content .capture-protocol th,
+  .leafinjuryr-content .capture-protocol td { min-width: 155px; }
+}
+
+@media (max-width: 600px) {
+  .page-container { margin: 0; padding: 0; }
+  .leafinjuryr-content { padding: 24px 16px; border-radius: 0; }
+}
+</style>
+</head>
+
+<body>
+<main class="page-container">
+<article class="leafinjuryr-content">
+{{ content }}
+</article>
+</main>
+
+<!-- Render ```mermaid blocks (GitHub does it natively; Jekyll does not) -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  document.querySelectorAll('div.language-mermaid, pre > code.language-mermaid').forEach(function (el) {
+    var box = el.closest('div.language-mermaid') || el.parentElement;
+    var pre = document.createElement('pre');
+    pre.className = 'mermaid';
+    pre.textContent = el.textContent;
+    box.replaceWith(pre);
+  });
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+  mermaid.run({ querySelector: 'pre.mermaid' });
+</script>
+</body>
+</html>
