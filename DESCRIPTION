@@ -1,43 +1,57 @@
 Package: LeafInjuryR
 Type: Package
-Title: Quantification of Visual Leaf Injury Patterns from Digital
-        Images
+Title: Quantification of Visual Leaf Injury Patterns from Digital Images
 Version: 0.2.0
-Authors@R: person(
-    given = "Wilhan Valasco",
-    family = "dos Santos",
-    email = "wilhanvalasco@hotmail.com",
-    role = c("aut", "cre", "cph")
+Date: 2026-10-10
+Authors@R:
+    person(
+        given = c("Wilhan", "Valasco"),
+        family = "dos Santos",
+        email = "wilhanvalasco@hotmail.com",
+        role = c("aut", "cre", "cph")
     )
-Description: Classical image-processing pipeline to quantify visual injury
-    patterns on detached leaves photographed against a contrasting background.
-    The pipeline separates three steps: (1) leaf/background segmentation,
-    (2) classification of leaf tissue (healthy/injured, or optionally
-    healthy/chlorotic/necrotic/other) using only pixels inside the leaf mask,
-    and (3) quantification of injured area as a percentage of leaf area.
-    Six public functions cover cropping, automatic and manually corrected
-    segmentation, single and batch analysis, validation against manually
-    produced reference masks (IoU, Dice, sensitivity, specificity, precision,
-    F1) and a local 'shiny' interface. Batch analyses produce a
-    self-contained HTML report, an Excel workbook and a CSV table from the
-    same results, with full parameter records for reproducibility. The package quantifies
-    visual patterns only; it does not diagnose pathogens, diseases,
-    nutritional disorders or phytotoxicity. All processing is local.
+Description: Provides an image-processing workflow for quantifying visual
+    leaf injury from digital RGB photographs. The workflow includes
+    leaf-background segmentation, classification of healthy and injured
+    leaf tissues, and estimation of injured area as a percentage of total
+    leaf area. Tissue classification supports binary categories
+    (healthy and injured) and optional multiclass categories
+    (healthy, chlorotic, necrotic, and other). Six public functions
+    support image cropping, automatic and manually corrected segmentation,
+    individual and batch analyses, validation against manually generated
+    reference masks, and a local interactive interface implemented with
+    'shiny'. Validation metrics include intersection over union, Dice
+    coefficient, sensitivity, specificity, precision, and F1 score.
+    Batch analyses generate HTML reports, Excel workbooks, and CSV tables,
+    with processing parameters recorded to support reproducibility.
+    The package quantifies visible injury patterns but does not diagnose
+    pathogens, diseases, nutritional disorders, or phytotoxicity.
+    All image processing is performed locally.
 License: GPL (>= 3)
 Encoding: UTF-8
 Language: en-US
-Depends: R (>= 4.1.0)
-Imports: EBImage, base64enc, writexl, graphics, grDevices, stats,
-        tools, utils
-Suggests: shiny (>= 1.7.0), bslib, DT, testthat (>= 3.0.0), knitr,
-        rmarkdown
-biocViews:
+Depends:
+    R (>= 4.1.0)
+Imports:
+    EBImage,
+    base64enc,
+    writexl,
+    graphics,
+    grDevices,
+    stats,
+    tools,
+    utils
+Suggests:
+    shiny (>= 1.7.0),
+    bslib,
+    DT,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://github.com/wilhanvalasco/LeafInjuryR
+Config/roxygen2/version: 8.1.0
+URL: https://github.com/wilhanvalasco/LeafInjuryR,
+    https://wilhanvalasco.github.io/LeafInjuryR/
 BugReports: https://github.com/wilhanvalasco/LeafInjuryR/issues
 NeedsCompilation: no
-Packaged: 2026-10-04 17:41:00 UTC; root
-Author: Wilhan Valasco dos Santos [aut, cre, cph]
-Maintainer: Wilhan Valasco dos Santos <wilhanvalasco@hotmail.com>
-Config/roxygen2/version: 8.1.0
