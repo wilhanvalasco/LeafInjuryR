@@ -1,4 +1,3 @@
-
 <p align="center">
   <img src="man/figures/logo.png" alt="LeafInjuryR logo" width="140">
 </p>
@@ -37,134 +36,6 @@
 
 <br>
 
-<!-- IMAGE ACQUISITION GUIDELINES -->
-
-<style>
-/* LeafInjuryR — Compact scientific acquisition cards */
-
-.capture-cards {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 12px;
-  margin: 38px 0 26px;
-  padding: 16px 3px 18px;
-  overflow-x: auto;
-}
-
-.capture-card {
-  position: relative;
-  min-width: 0;
-  min-height: 235px;
-  box-sizing: border-box;
-  padding: 48px 14px 19px;
-  border: 1px solid #D7DDE5;
-  border-radius: 18px;
-  background: #FFFFFF;
-  box-shadow: 0 5px 18px rgba(35,55,80,.055);
-  display: flex;
-  flex-direction: column;
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-
-.capture-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 25px rgba(35,55,80,.11);
-}
-
-.capture-card-number {
-  position: absolute;
-  top: -13px;
-  left: 12px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #1768C7;
-  color: #FFFFFF;
-  font-size: 21px;
-  font-weight: 800;
-}
-
-.capture-card:nth-child(even) .capture-card-number {
-  background: #4B5563;
-}
-
-.capture-card-line {
-  height: 1px;
-  margin: 0 0 20px 43px;
-  background: #1768C7;
-}
-
-.capture-card:nth-child(even) .capture-card-line {
-  background: #4B5563;
-}
-
-.capture-card h3 {
-  margin: 0 0 13px;
-  color: #142B45;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.3;
-  letter-spacing: .2px;
-}
-
-.capture-card p {
-  margin: 0;
-  color: #566276;
-  font-size: 11px;
-  line-height: 1.55;
-}
-
-.capture-card-progress {
-  height: 5px;
-  margin-top: auto;
-  padding-top: 18px;
-  border-bottom: 4px solid #E2E6EC;
-  position: relative;
-}
-
-.capture-card-progress::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 42%;
-  height: 4px;
-  border-radius: 4px;
-  background: #1768C7;
-}
-
-.capture-card:nth-child(even) .capture-card-progress::after {
-  background: #4B5563;
-}
-
-.capture-important {
-  margin: 22px 0;
-  padding: 17px 20px;
-  border: 1px solid #D6E6E3;
-  border-left: 3px solid #1768C7;
-  border-radius: 12px;
-  background: #F8FAFC;
-  color: #526276;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-@media (max-width: 1200px) {
-  .capture-cards {
-    grid-template-columns: repeat(7, 155px);
-  }
-}
-
-@media (max-width: 600px) {
-  .capture-card {
-    min-height: 215px;
-  }
-}
-</style>
-
 ## Image acquisition guidelines
 
 Standardized image acquisition is essential for accurate leaf segmentation and reliable quantification of visual injury. Consistent photographic conditions reduce background interference, illumination artifacts and classification errors, improving reproducibility across samples.
@@ -177,84 +48,19 @@ Standardized image acquisition is essential for accurate leaf segmentation and r
   <sub>Recommended photographic conditions for consistent and reproducible leaf injury assessment.</sub>
 </p>
 
-<br>
+<p align="center">
+  <img src="man/figures/capture-cards.svg" width="100%" alt="Image acquisition guidelines. 01 Framing: keep the entire leaf visible without cropping its margins. 02 Background: uniform, matte white surface. 03 Lighting: soft, diffuse illumination without shadows or glare. 04 Camera angle: perpendicular to the leaf, about 90 degrees. 05 Sharpness: entire leaf in focus, no camera movement. 06 Leaf condition: flat, clean and dry. 07 Image quality: original resolution, no filters or colour enhancement.">
+</p>
 
-<div class="capture-cards">
-<div class="capture-card">
-<div class="capture-card-number">01</div>
-<div class="capture-card-line"></div>
-<h3>FRAMING</h3>
-<p>Keep the entire leaf visible, occupying most of the photograph without cropping its margins.</p>
-<div class="capture-card-progress"></div>
-</div>
-<div class="capture-card">
-<div class="capture-card-number">02</div>
-<div class="capture-card-line"></div>
-<h3>BACKGROUND</h3>
-<p>Use a uniform, matte white surface, preferably plain white paper.</p>
-<div class="capture-card-progress"></div>
-</div>
-<div class="capture-card">
-<div class="capture-card-number">03</div>
-<div class="capture-card-line"></div>
-<h3>LIGHTING</h3>
-<p>Prefer soft, diffuse illumination. Avoid shadows, direct sunlight and glare.</p>
-<div class="capture-card-progress"></div>
-</div>
-<div class="capture-card">
-<div class="capture-card-number">04</div>
-<div class="capture-card-line"></div>
-<h3>CAMERA ANGLE</h3>
-<p>Position the camera perpendicular to the leaf surface, approximately 90 degrees.</p>
-<div class="capture-card-progress"></div>
-</div>
-<div class="capture-card">
-<div class="capture-card-number">05</div>
-<div class="capture-card-line"></div>
-<h3>IMAGE SHARPNESS</h3>
-<p>Keep the entire leaf in focus and avoid camera movement.</p>
-<div class="capture-card-progress"></div>
-</div>
-<div class="capture-card">
-<div class="capture-card-number">06</div>
-<div class="capture-card-line"></div>
-<h3>LEAF CONDITION</h3>
-<p>Keep the leaf flat, clean and dry, preserving visible injury symptoms.</p>
-<div class="capture-card-progress"></div>
-</div>
-<div class="capture-card">
-<div class="capture-card-number">07</div>
-<div class="capture-card-line"></div>
-<h3>IMAGE QUALITY</h3>
-<p>Use the original camera resolution without filters or artificial colour enhancement.</p>
-<div class="capture-card-progress"></div>
-</div>
-</div>
-
-<div class="capture-important">
-<strong>IMPORTANT.</strong> Standardized photographic conditions minimize segmentation variability and tissue misclassification, supporting more accurate, consistent and reproducible measurements of injured leaf area.
-</div>
+<p align="center">
+  <img src="man/figures/important-acquisition.svg" width="100%" alt="Important: standardized photographic conditions minimize segmentation variability and tissue misclassification, supporting more accurate, consistent and reproducible measurements of injured leaf area.">
+</p>
 
 <br>
 
-<!-- END IMAGE ACQUISITION GUIDELINES -->
-
-<table>
-  <tr>
-    <td width="33%" valign="top">
-      <b>Transparent</b><br>
-      Colour thresholds and segmentation rules you can read, change and report.
-    </td>
-    <td width="33%" valign="top">
-      <b>Reproducible</b><br>
-      Every result keeps the parameters, version and manual edits that produced it.
-    </td>
-    <td width="33%" valign="top">
-      <b>Local</b><br>
-      Runs on your computer. No account, no cloud, no telemetry, no uploads.
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img src="man/figures/features.svg" width="100%" alt="Transparent: colour thresholds and segmentation rules you can read, change and report. Reproducible: every result keeps the parameters, version and manual edits that produced it. Local: runs on your computer; no account, no cloud, no telemetry, no uploads.">
+</p>
 
 <br>
 
@@ -267,9 +73,9 @@ Standardized image acquisition is essential for accurate leaf segmentation and r
 
 <p align="center"><sub>Background pixels never enter the calculation.</sub></p>
 
-> [!NOTE]
-> LeafInjuryR measures visual colour patterns. It does not diagnose pathogens,
-> diseases, nutrient deficiencies or phytotoxicity.
+<p align="center">
+  <img src="man/figures/note-scope.svg" width="100%" alt="Note: LeafInjuryR measures visual colour patterns. It does not diagnose pathogens, diseases, nutrient deficiencies or phytotoxicity.">
+</p>
 
 <br>
 
@@ -348,7 +154,7 @@ run_leafinjury_app()
 ```mermaid
 flowchart LR
     A[RGB image] --> B[Segment]
-    B --> M{{"lab | hsv | exg | otsu | adaptive | kmeans"}}
+    B --> M(["lab · hsv · exg · otsu · adaptive · kmeans"])
     M --> C[Leaf mask]
     C --> D[Classify tissue]
     D --> H[Healthy]
@@ -453,10 +259,9 @@ validation
 
 Reported metrics: IoU, Dice, sensitivity, specificity, precision and F1.
 
-> [!IMPORTANT]
-> Software is not a validated method. Calibrate and validate LeafInjuryR
-> against representative reference masks for each species, camera, background
-> and lighting condition before using its numbers in a study.
+<p align="center">
+  <img src="man/figures/important-validation.svg" width="100%" alt="Important: software is not a validated method. Calibrate and validate LeafInjuryR against representative reference masks for each species, camera, background and lighting condition before using its numbers in a study.">
+</p>
 
 A suggested order for a study: acquire images, draw reference masks,
 calibrate thresholds, validate, then analyse the full set.
@@ -502,57 +307,22 @@ GPL (>= 3)
 
 <br>
 
-<div align="center" markdown="0">
-
-  <img src="man/figures/author.png"
-       alt="Wilhan Valasco dos Santos"
-       width="230">
-
-  <p>
-    <sub><b>D E V E L O P E R &nbsp;&nbsp;·&nbsp;&nbsp; M A I N T A I N E R</b></sub>
-  </p>
-
+<div align="center">
+  <img src="man/figures/author.png" alt="Wilhan Valasco dos Santos" width="230">
+  <p><sub><b>D E V E L O P E R &nbsp;&nbsp;·&nbsp;&nbsp; M A I N T A I N E R</b></sub></p>
   <h1>WILHAN VALASCO DOS SANTOS</h1>
-
+  <p><i>Agronomist and data scientist building open tools for plant science.</i></p>
+  <p><sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub></p>
   <p>
-    <span style="display:inline-block;width:72px;height:3px;background-color:#1DBB73;border-radius:3px;"></span>
+    <img src="man/figures/academic-profile.svg" width="100%" alt="Academic profile: PhD Candidate in Biotechnology and Biodiversity (IF Goiano); Master's degree in Plant Protection (IF Goiano); Bachelor's degree in Agronomy (IF Goiano); Specialist in Data Science (FMSP); MBA in Business Management (IF Goiano)">
   </p>
-
   <p>
-    <i>Agronomist and data scientist building open tools for plant science.</i>
-  </p>
-
-  <p>
-    <sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub>
-  </p>
-
-  <p>
-    <span style="display:inline-block;width:72px;height:3px;background-color:#1DBB73;border-radius:3px;"></span>
-  </p>
-
-  <p>
-    <img src="man/figures/academic-profile.svg"
-         width="100%"
-         alt="Academic profile: PhD Candidate in Biotechnology and Biodiversity (IF Goiano); Master's degree in Plant Protection (IF Goiano); Bachelor's degree in Agronomy (IF Goiano); Specialist in Data Science (FMSP); MBA in Business Management (IF Goiano)">
-  </p>
-
-  <p>
-    <a href="mailto:wilhan.santos@hotmail.com">
-      <img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&amp;logo=maildotru&amp;logoColor=white"
-           alt="Email: wilhan.santos@hotmail.com">
-    </a>
+    <a href="mailto:wilhan.santos@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: wilhan.santos@hotmail.com"></a>
     &nbsp;
-    <a href="https://wa.me/5564992862039">
-      <img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&amp;logo=whatsapp&amp;logoColor=25D366"
-           alt="WhatsApp: +55 64 99286-2039">
-    </a>
+    <a href="https://wa.me/5564992862039"><img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&logo=whatsapp&logoColor=25D366" alt="WhatsApp: +55 64 99286-2039"></a>
     &nbsp;
-    <a href="https://github.com/wilhanvalasco">
-      <img src="https://img.shields.io/badge/GitHub-wilhanvalasco-1F2933?style=for-the-badge&amp;logo=github&amp;logoColor=white"
-           alt="GitHub: wilhanvalasco">
-    </a>
+    <a href="https://github.com/wilhanvalasco"><img src="https://img.shields.io/badge/GitHub-wilhanvalasco-1F2933?style=for-the-badge&logo=github&logoColor=white" alt="GitHub: wilhanvalasco"></a>
   </p>
-
 </div>
 
 <br>
