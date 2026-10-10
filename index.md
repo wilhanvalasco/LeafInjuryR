@@ -73,6 +73,15 @@ window.MathJax = {
 
 {% capture readme_content %}{% include_relative README.md %}{% endcapture %}
 
+{% assign readme_clean = readme_content %}
+
+{% assign readme_first_char = readme_clean | strip | slice: 0, 3 %}
+
+{% if readme_first_char == '---' %}
+  {% assign readme_parts = readme_clean | split: '---' %}
+  {% assign readme_clean = readme_parts | shift | shift | join: '---' %}
+{% endif %}
+
 <div class="leafinjuryr-content">
-{{ readme_content | markdownify }}
+{{ readme_clean | markdownify }}
 </div>
