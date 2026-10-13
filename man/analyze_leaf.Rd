@@ -21,87 +21,86 @@ analyze_leaf(
 )
 }
 \arguments{
-\item{image}{Path to an image file (JPEG, PNG, TIFF) or an EBImage `Image`.}
+\item{image}{Path to an image file (JPEG, PNG, TIFF) or an EBImage \code{Image}.}
 
-\item{crop}{`"none"`, `"auto"` or `"manual"` (see [crop_leaf()]).}
+\item{crop}{\code{"none"}, \code{"auto"} or \code{"manual"} (see \code{\link[=crop_leaf]{crop_leaf()}}).}
 
-\item{crop_points}{For `crop = "manual"`: list with numeric `x` and `y`.}
+\item{crop_points}{For \code{crop = "manual"}: list with numeric \code{x} and \code{y}.}
 
-\item{method, tissue_method, multiclass, normalize}{See [segment_leaf()].}
+\item{method, tissue_method, multiclass, normalize}{See \code{\link[=segment_leaf]{segment_leaf()}}.}
 
-\item{corrections}{Optional manual corrections (see [segment_leaf()]),
+\item{corrections}{Optional manual corrections (see \code{\link[=segment_leaf]{segment_leaf()}}),
 in coordinates of the cropped image.}
 
-\item{segmentation}{Optional `leaf_segmentation` already computed on the
+\item{segmentation}{Optional \code{leaf_segmentation} already computed on the
 cropped image (e.g. corrected interactively); it is used as is.}
 
 \item{pixels_per_cm}{Optional scale (pixels per centimetre). If supplied,
 areas in cm^2 are added.}
 
-\item{params}{Optional parameter overrides (see *Parameters*).}
+\item{params}{Optional parameter overrides (see \emph{Parameters}).}
 
-\item{keep_images}{Keep image arrays in the result (set `FALSE` to save
+\item{keep_images}{Keep image arrays in the result (set \code{FALSE} to save
 memory; masks and metrics are always kept).}
 
 \item{display}{Plot the four audit panels.}
 }
 \value{
-An object of class `leaf_analysis` with `original`, `cropped`,
-  `normalized`, `leaf_mask`, `healthy_mask`, `injury_mask`, `class_map`,
-  `perforation_mask`, `overlay`, `metrics` (one-row data frame),
-  `parameters` (complete record for reproducibility), `quality`,
-  `metadata`, `crop`, `segmentation` and `timing`. Has `print()`,
-  `plot()` and `as.data.frame()` methods.
+An object of class \code{leaf_analysis} with \code{original}, \code{cropped},
+\code{normalized}, \code{leaf_mask}, \code{healthy_mask}, \code{injury_mask}, \code{class_map},
+\code{perforation_mask}, \code{overlay}, \code{metrics} (one-row data frame),
+\code{parameters} (complete record for reproducibility), \code{quality},
+\code{metadata}, \code{crop}, \code{segmentation} and \code{timing}. Has \code{print()},
+\code{plot()} and \code{as.data.frame()} methods.
 }
 \description{
 Complete, auditable pipeline for one photograph:
 }
 \details{
-```
-import -> crop (optional) -> segment leaf -> leaf mask -> classify tissue
+\if{html}{\out{<div class="sourceCode">}}\preformatted{import -> crop (optional) -> segment leaf -> leaf mask -> classify tissue
   INSIDE the leaf mask -> (manual corrections) -> quantify -> quality control
-```
+}\if{html}{\out{</div>}}
 
-The injury percentage is `injured pixels / leaf-mask pixels x 100`; the
-background never enters the calculation. Areas are reported in **pixels**.
+The injury percentage is \verb{injured pixels / leaf-mask pixels x 100}; the
+background never enters the calculation. Areas are reported in \strong{pixels}.
 Physical areas (cm^2) are added only when a valid scale is supplied with
-`pixels_per_cm` (e.g. measured from a ruler or reference object photographed
+\code{pixels_per_cm} (e.g. measured from a ruler or reference object photographed
 in the same plane as the leaf).
 }
-\section{Parameters (`params`)}{
+\section{Parameters (\code{params})}{
 
 Every tunable value has a documented default and can be overridden with a
 named list of groups, e.g.
-`params = list(morphology = list(min_object_size = 500), tissue = list(lab_healthy_hue_min = 98))`.
-The complete configuration used is stored in `result$parameters$config`
-and can be passed back as `params` to reproduce an analysis.
+\code{params = list(morphology = list(min_object_size = 500), tissue = list(lab_healthy_hue_min = 98))}.
+The complete configuration used is stored in \code{result$parameters$config}
+and can be passed back as \code{params} to reproduce an analysis.
 \describe{
-  \item{`segmentation`}{`threshold` (manual threshold for single-feature
-    methods; `NULL` = image-derived), `otsu_bins` (256), `min_separability`
-    (0.5), `border_fraction` (0.05), `max_border_foreground` (0.35),
-    `kmeans_centers` (3), `kmeans_sample` (20000), `kmeans_nstart` (5),
-    `kmeans_iter` (50), `kmeans_background_border_share` (0.2),
-    `surface_degree` (2), `surface_sample` (20000), `seed` (1).}
-  \item{`morphology`}{`opening_radius` (1 px), `brush_shape` ("disc"),
-    `min_object_size` (`NULL` = `min_object_fraction` x image area),
-    `min_object_fraction` (0.001), `keep_largest` (TRUE), `fill_holes`
-    (TRUE), `hole_policy` ("fill_non_background", "fill_all", "none"),
-    `background_delta_e` (15), `min_perforation_size` (25 px).}
-  \item{`crop`}{`margin_fraction` (0.05), `preview_max_dim` (400).}
-  \item{`normalization`}{`white_balance` (TRUE), `flatten_illumination`
-    (FALSE), `background_quantile` (0.5), `max_gain` (1.3).}
-  \item{`tissue`}{`lab_healthy_hue_min` (100), `lab_healthy_hue_max` (200),
-    `lab_necrotic_hue_max` (85), `hsv_healthy_hue_min` (57),
-    `hsv_healthy_hue_max` (170), `hsv_min_saturation` (0.15),
-    `exgr_threshold` (0), `achromatic_chroma_max` (8),
-    `dark_lightness_max` (35), `auto_hue_bounds` (90, 110),
-    `relative_hue_shift` (15), `relative_lightness_drop` (25),
-    `relative_bin_width` (4), `min_injury_size` (0).}
-  \item{`qc`}{`min_leaf_fraction` (0.02), `max_leaf_fraction` (0.90),
-    `max_raw_components` (50), `min_main_component_share` (0.90),
-    `min_contrast` (0.5), `max_illumination_cv` (0.08),
-    `illumination_grid` (4), `near_zero_injury` (0.5),
-    `near_full_injury` (99.5), `max_other_percent` (5).}
+\item{\code{segmentation}}{\code{threshold} (manual threshold for single-feature
+methods; \code{NULL} = image-derived), \code{otsu_bins} (256), \code{min_separability}
+(0.5), \code{border_fraction} (0.05), \code{max_border_foreground} (0.35),
+\code{kmeans_centers} (3), \code{kmeans_sample} (20000), \code{kmeans_nstart} (5),
+\code{kmeans_iter} (50), \code{kmeans_background_border_share} (0.2),
+\code{surface_degree} (2), \code{surface_sample} (20000), \code{seed} (1).}
+\item{\code{morphology}}{\code{opening_radius} (1 px), \code{brush_shape} ("disc"),
+\code{min_object_size} (\code{NULL} = \code{min_object_fraction} x image area),
+\code{min_object_fraction} (0.001), \code{keep_largest} (TRUE), \code{fill_holes}
+(TRUE), \code{hole_policy} ("fill_non_background", "fill_all", "none"),
+\code{background_delta_e} (15), \code{min_perforation_size} (25 px).}
+\item{\code{crop}}{\code{margin_fraction} (0.05), \code{preview_max_dim} (400).}
+\item{\code{normalization}}{\code{white_balance} (TRUE), \code{flatten_illumination}
+(FALSE), \code{background_quantile} (0.5), \code{max_gain} (1.3).}
+\item{\code{tissue}}{\code{lab_healthy_hue_min} (100), \code{lab_healthy_hue_max} (200),
+\code{lab_necrotic_hue_max} (85), \code{hsv_healthy_hue_min} (57),
+\code{hsv_healthy_hue_max} (170), \code{hsv_min_saturation} (0.15),
+\code{exgr_threshold} (0), \code{achromatic_chroma_max} (8),
+\code{dark_lightness_max} (35), \code{auto_hue_bounds} (90, 110),
+\code{relative_hue_shift} (15), \code{relative_lightness_drop} (25),
+\code{relative_bin_width} (4), \code{min_injury_size} (0).}
+\item{\code{qc}}{\code{min_leaf_fraction} (0.02), \code{max_leaf_fraction} (0.90),
+\code{max_raw_components} (50), \code{min_main_component_share} (0.90),
+\code{min_contrast} (0.5), \code{max_illumination_cv} (0.08),
+\code{illumination_grid} (4), \code{near_zero_injury} (0.5),
+\code{near_full_injury} (99.5), \code{max_other_percent} (5).}
 }
 Hue angles are in degrees. All defaults are starting values, not validated
 constants.

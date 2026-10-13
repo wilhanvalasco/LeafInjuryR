@@ -20,47 +20,46 @@ analyze_leaf_batch(
 
 \item{output_dir}{Optional output directory (created if needed).}
 
-\item{reports}{Report formats to write: any of `"html"`, `"xlsx"`, `"csv"`.}
+\item{reports}{Report formats to write: any of \code{"html"}, \code{"xlsx"}, \code{"csv"}.}
 
-\item{save_images}{Write mask and overlay PNG files (requires `output_dir`).}
+\item{save_images}{Write mask and overlay PNG files (requires \code{output_dir}).}
 
 \item{progress}{Show a text progress bar.}
 
-\item{callback}{Optional `function(i, n, file, status)` called after each
+\item{callback}{Optional \verb{function(i, n, file, status)} called after each
 image (used by the Shiny app).}
 
-\item{recursive}{When `images` is a directory, search sub-directories.}
+\item{recursive}{When \code{images} is a directory, search sub-directories.}
 
-\item{...}{Settings passed to [analyze_leaf()] (e.g. `crop`, `method`,
-`tissue_method`, `multiclass`, `normalize`, `pixels_per_cm`, `params`).}
+\item{...}{Settings passed to \code{\link[=analyze_leaf]{analyze_leaf()}} (e.g. \code{crop}, \code{method},
+\code{tissue_method}, \code{multiclass}, \code{normalize}, \code{pixels_per_cm}, \code{params}).}
 }
 \value{
-An object of class `leaf_batch`: `results` (data frame), `summary`
-  (descriptive statistics), `parameters`, `settings`, `thumbnails`,
-  `output_dir`, `report_files`, `files` and `total_elapsed_sec`.
+An object of class \code{leaf_batch}: \code{results} (data frame), \code{summary}
+(descriptive statistics), \code{parameters}, \code{settings}, \code{thumbnails},
+\code{output_dir}, \code{report_files}, \code{files} and \code{total_elapsed_sec}.
 }
 \description{
-Applies [analyze_leaf()] to every image with identical parameters. Each
+Applies \code{\link[=analyze_leaf]{analyze_leaf()}} to every image with identical parameters. Each
 image is processed independently: an image that fails is recorded with
-`status = "failed"` and its error message, and the batch continues.
+\code{status = "failed"} and its error message, and the batch continues.
 Images are released from memory after each analysis; only small
 thumbnails are kept for the reports.
 }
 \details{
-When `output_dir` is given, the three reports are generated automatically
+When \code{output_dir} is given, the three reports are generated automatically
 from the same results table (consistent by construction):
 
-```
-output_dir/
+\if{html}{\out{<div class="sourceCode">}}\preformatted{output_dir/
   report.html     self-contained interactive report (opens offline)
   results.xlsx    sheets "Resultados", "Resumo", "Parametros"
   results.csv     one row per image, one column per variable
   masks/          <name>_leaf_mask.png, <name>_injury_mask.png, <name>_class_map.png
   overlays/       <name>_overlay.png
-```
+}\if{html}{\out{</div>}}
 
 Batch analysis uses automatic segmentation only; manual corrections are
-made image by image with [analyze_leaf()] or in the Shiny app.
+made image by image with \code{\link[=analyze_leaf]{analyze_leaf()}} or in the Shiny app.
 }
 \examples{
 imgs <- system.file("extdata", c("leaf_example_01.jpg", "leaf_example_02.jpg"),

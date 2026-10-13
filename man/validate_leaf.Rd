@@ -12,38 +12,40 @@ validate_leaf(
 )
 }
 \arguments{
-\item{x}{A `leaf_analysis` (from [analyze_leaf()]) or `leaf_batch` (from
-[analyze_leaf_batch()]; quality control only).}
+\item{x}{A \code{leaf_analysis} (from \code{\link[=analyze_leaf]{analyze_leaf()}}) or \code{leaf_batch} (from
+\code{\link[=analyze_leaf_batch]{analyze_leaf_batch()}}; quality control only).}
 
 \item{reference_leaf_mask, reference_injury_mask}{Optional reference masks:
-file paths or logical matrices `[width, height]`.}
+file paths or logical matrices \verb{[width, height]}.}
 
-\item{injury_region}{Region used for (B): `"intersection"` of reference and
+\item{injury_region}{Region used for (B): \code{"intersection"} of reference and
 predicted leaf (default, isolates classification errors) or
-`"reference_leaf"`.}
+\code{"reference_leaf"}.}
 }
 \value{
-An object of class `leaf_validation` with `quality` (flag,
-  messages, indicators, heuristic `diagnostic_score`, which is **not** a
-  probability), `has_reference`, `metrics` (data frame or `NULL`) and
-  `comparison` (maps for visual comparison; use `plot()`).
+An object of class \code{leaf_validation} with \code{quality} (flag,
+messages, indicators, heuristic \code{diagnostic_score}, which is \strong{not} a
+probability), \code{has_reference}, \code{metrics} (data frame or \code{NULL}) and
+\code{comparison} (maps for visual comparison; use \code{plot()}).
 }
 \description{
 Two different questions are answered, and they are never mixed:
 }
 \details{
-1. **Quality control** (always): heuristic indicators of the processing
-   (leaf size, fragmentation, contrast, illumination, extreme injury
-   values, excluded perforation candidates) and a flag `"ok"`,
-   `"warning"` or `"failed"`. Warnings never change results.
-2. **Accuracy** (only when reference masks are supplied): pixel-wise
-   agreement with manually drawn reference masks, evaluated separately for
-   (A) leaf x background and (B) healthy x injured inside the leaf. Metrics:
-   IoU (Jaccard), Dice, sensitivity, specificity, precision and F1, plus the
-   error of the injury percentage. Without references **no accuracy metric
-   is reported**.
+\enumerate{
+\item \strong{Quality control} (always): heuristic indicators of the processing
+(leaf size, fragmentation, contrast, illumination, extreme injury
+values, excluded perforation candidates) and a flag \code{"ok"},
+\code{"warning"} or \code{"failed"}. Warnings never change results.
+\item \strong{Accuracy} (only when reference masks are supplied): pixel-wise
+agreement with manually drawn reference masks, evaluated separately for
+(A) leaf x background and (B) healthy x injured inside the leaf. Metrics:
+IoU (Jaccard), Dice, sensitivity, specificity, precision and F1, plus the
+error of the injury percentage. Without references \strong{no accuracy metric
+is reported}.
+}
 
-Reference masks must have the size of the **original** photograph (white =
+Reference masks must have the size of the \strong{original} photograph (white =
 object); cropped predictions are mapped back automatically. Use lossless
 PNG/TIFF masks.
 }

@@ -15,9 +15,9 @@ crop_leaf(
 )
 }
 \arguments{
-\item{image}{Path to an image file (JPEG, PNG, TIFF) or an EBImage `Image`.}
+\item{image}{Path to an image file (JPEG, PNG, TIFF) or an EBImage \code{Image}.}
 
-\item{mode}{`"auto"` or `"manual"`.}
+\item{mode}{\code{"auto"} or \code{"manual"}.}
 
 \item{x, y}{Numeric pixel coordinates (at least two points) for manual crop.}
 
@@ -25,31 +25,33 @@ crop_leaf(
 size.}
 
 \item{method}{Segmentation method used to locate the leaf in automatic mode
-(see [segment_leaf()]).}
+(see \code{\link[=segment_leaf]{segment_leaf()}}).}
 
-\item{params}{Optional parameter overrides (see [analyze_leaf()]).}
+\item{params}{Optional parameter overrides (see \code{\link[=analyze_leaf]{analyze_leaf()}}).}
 }
 \value{
-The cropped `Image`. Attribute `crop_info` records `method`,
-  `found`, `bbox` (`x_min`, `x_max`, `y_min`, `y_max`, in original pixel
-  coordinates) and `original_dim`, so masks can be mapped back to the
-  original photograph.
+The cropped \code{Image}. Attribute \code{crop_info} records \code{method},
+\code{found}, \code{bbox} (\code{x_min}, \code{x_max}, \code{y_min}, \code{y_max}, in original pixel
+coordinates) and \code{original_dim}, so masks can be mapped back to the
+original photograph.
 }
 \description{
-Crops the photograph to the region of interest **without resampling**:
+Crops the photograph to the region of interest \strong{without resampling}:
 the original resolution and aspect of every pixel are preserved, and the
 original image object is never modified.
 }
 \details{
-* `mode = "auto"` locates the main leaf on a down-scaled preview with the
-  same segmentation used for analysis, takes its bounding box and adds a
-  margin (`margin`, default 5% of the box) so that leaf borders are kept.
-  If no leaf is found the full image is returned and
-  `attr(x, "crop_info")$found` is `FALSE`.
-* `mode = "manual"` crops to the bounding box of the points `x`, `y`
-  (pixel coordinates; x along the width, y along the height, origin at the
-  top-left). In the Shiny app these come from a rectangle drawn with the
-  mouse. Coordinates outside the image are clipped.
+\itemize{
+\item \code{mode = "auto"} locates the main leaf on a down-scaled preview with the
+same segmentation used for analysis, takes its bounding box and adds a
+margin (\code{margin}, default 5\% of the box) so that leaf borders are kept.
+If no leaf is found the full image is returned and
+\code{attr(x, "crop_info")$found} is \code{FALSE}.
+\item \code{mode = "manual"} crops to the bounding box of the points \code{x}, \code{y}
+(pixel coordinates; x along the width, y along the height, origin at the
+top-left). In the Shiny app these come from a rectangle drawn with the
+mouse. Coordinates outside the image are clipped.
+}
 }
 \examples{
 f <- system.file("extdata", "leaf_example_01.jpg", package = "LeafInjuryR")

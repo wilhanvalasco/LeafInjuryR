@@ -7,12 +7,12 @@
 \method{plot}{leaf_analysis}(x, ...)
 }
 \arguments{
-\item{x}{A `leaf_analysis` object.}
+\item{x}{A \code{leaf_analysis} object.}
 
 \item{...}{Unused.}
 }
 \value{
-`x`, invisibly.
+\code{x}, invisibly.
 }
 \description{
 Shows ORIGINAL (analysed region), LEAF MASK, CLASSIFICATION and OVERLAY.

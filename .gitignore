@@ -9,3 +9,6 @@ inst/doc/
 .httr-oauth
 .quarto
 build/
+Data base/
+results/
+README.html

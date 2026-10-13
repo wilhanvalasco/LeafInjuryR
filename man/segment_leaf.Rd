@@ -17,10 +17,10 @@ segment_leaf(
 )
 }
 \arguments{
-\item{image}{Path to an image file or an EBImage `Image` (typically the
-output of [crop_leaf()]).}
+\item{image}{Path to an image file or an EBImage \code{Image} (typically the
+output of \code{\link[=crop_leaf]{crop_leaf()}}).}
 
-\item{mode}{`"auto"` or `"manual"`.}
+\item{mode}{\code{"auto"} or \code{"manual"}.}
 
 \item{method}{Leaf/background segmentation method.}
 
@@ -33,44 +33,44 @@ background pixels before segmentation (original pixels are preserved).}
 
 \item{corrections}{Data frame of manual corrections (manual mode).}
 
-\item{segmentation}{Optional existing `leaf_segmentation` to correct
+\item{segmentation}{Optional existing \code{leaf_segmentation} to correct
 (avoids recomputing the automatic step).}
 
-\item{params}{Optional parameter overrides (see [analyze_leaf()]).}
+\item{params}{Optional parameter overrides (see \code{\link[=analyze_leaf]{analyze_leaf()}}).}
 }
 \value{
-An object of class `leaf_segmentation` with `leaf_mask`,
-  `class_map` (0 background, 1 healthy, 2 injured or 2 chlorotic /
-  3 necrotic / 4 other), `healthy_mask`, `injury_mask`,
-  `perforation_mask`, `metrics` (pixel counts and percentages),
-  `thresholds`, `details`, `components` (with removal reasons), `holes`,
-  `corrections`, `mode`, `method`, `tissue_method`, `multiclass`,
-  `normalization` and `config`.
+An object of class \code{leaf_segmentation} with \code{leaf_mask},
+\code{class_map} (0 background, 1 healthy, 2 injured or 2 chlorotic /
+3 necrotic / 4 other), \code{healthy_mask}, \code{injury_mask},
+\code{perforation_mask}, \code{metrics} (pixel counts and percentages),
+\code{thresholds}, \code{details}, \code{components} (with removal reasons), \code{holes},
+\code{corrections}, \code{mode}, \code{method}, \code{tissue_method}, \code{multiclass},
+\code{normalization} and \code{config}.
 }
 \description{
-Performs, in this order: optional conservative normalisation, **leaf /
-background segmentation** (the leaf mask), and **tissue classification
-restricted to pixels inside the leaf mask**. Background pixels can never be
+Performs, in this order: optional conservative normalisation, \strong{leaf /
+background segmentation} (the leaf mask), and \strong{tissue classification
+restricted to pixels inside the leaf mask}. Background pixels can never be
 counted as healthy or injured tissue.
 }
 \section{Automatic mode}{
 
-Thresholds are derived from each image (see *Segmentation methods*) and
+Thresholds are derived from each image (see \emph{Segmentation methods}) and
 cleaned with morphology and connected-component analysis. Every decision
 (thresholds, removed components, filled holes) is stored in the result.
 }
 
 \section{Manual mode}{
 
-Starts from an automatic segmentation (or from `segmentation`, if given)
-and applies user `corrections` in order. `corrections` is a data frame with
+Starts from an automatic segmentation (or from \code{segmentation}, if given)
+and applies user \code{corrections} in order. \code{corrections} is a data frame with
 one row per correction and the columns:
 \describe{
-  \item{`action`}{`"add_leaf"`, `"remove_leaf"`, `"healthy"`, `"injured"`,
-    `"chlorotic"` or `"necrotic"` (the last two need `multiclass = TRUE`;
-    otherwise they mean `"injured"`).}
-  \item{`shape`}{`"circle"` (a brush stroke: `x`, `y`, `radius`) or
-    `"rect"` (`xmin`, `xmax`, `ymin`, `ymax`).}
+\item{\code{action}}{\code{"add_leaf"}, \code{"remove_leaf"}, \code{"healthy"}, \code{"injured"},
+\code{"chlorotic"} or \code{"necrotic"} (the last two need \code{multiclass = TRUE};
+otherwise they mean \code{"injured"}).}
+\item{\code{shape}}{\code{"circle"} (a brush stroke: \code{x}, \code{y}, \code{radius}) or
+\code{"rect"} (\code{xmin}, \code{xmax}, \code{ymin}, \code{ymax}).}
 }
 Coordinates are pixels of the image being segmented. Pixels added to the
 leaf are classified with the same tissue rule; tissue actions only change
@@ -78,31 +78,31 @@ pixels inside the leaf mask. Corrections are stored in the result, so a
 corrected analysis is reproducible.
 }
 
-\section{Segmentation methods (`method`)}{
+\section{Segmentation methods (\code{method})}{
 
-`"auto"` (default; Otsu thresholds on CIELAB chroma and darkness with
+\code{"auto"} (default; Otsu thresholds on CIELAB chroma and darkness with
 background polarity inferred from the image border, union of accepted
-features, k-means fallback), `"lab"` (chroma), `"hsv"` (saturation),
-`"exg"` (excess green; excludes brown necrosis, provided for comparison),
-`"otsu"` (grey level), `"adaptive"` (lightness after removing a fitted
-illumination surface), `"kmeans"` (clustering in CIELAB).
+features, k-means fallback), \code{"lab"} (chroma), \code{"hsv"} (saturation),
+\code{"exg"} (excess green; excludes brown necrosis, provided for comparison),
+\code{"otsu"} (grey level), \code{"adaptive"} (lightness after removing a fitted
+illumination surface), \code{"kmeans"} (clustering in CIELAB).
 }
 
-\section{Tissue methods (`tissue_method`)}{
+\section{Tissue methods (\code{tissue_method})}{
 
-`"lab"` (default; fixed CIELAB hue-angle thresholds, identical for all
-images, preferable when comparing treatments), `"hsv"`, `"exgr"`
-(ExG - ExR; mainly detects necrosis), `"vote"` (majority of lab, hsv and
-exgr), `"auto"` (within-leaf Otsu on hue, bounded) and `"relative"`
+\code{"lab"} (default; fixed CIELAB hue-angle thresholds, identical for all
+images, preferable when comparing treatments), \code{"hsv"}, \code{"exgr"}
+(ExG - ExR; mainly detects necrosis), \code{"vote"} (majority of lab, hsv and
+exgr), \code{"auto"} (within-leaf Otsu on hue, bounded) and \code{"relative"}
 (distance to the leaf's own dominant colour; intended for naturally
 pigmented or senescent leaves, where "absence of green" is not a valid
 injury criterion). Achromatic pixels are never healthy. With
-`multiclass = TRUE`, injured pixels are subdivided into chlorotic,
-necrotic and other, and `injured = chlorotic + necrotic + other` exactly.
+\code{multiclass = TRUE}, injured pixels are subdivided into chlorotic,
+necrotic and other, and \code{injured = chlorotic + necrotic + other} exactly.
 
 Thresholds are starting values, not validated constants; calibrate them
 against manual reference masks for each imaging setup (see
-[validate_leaf()]).
+\code{\link[=validate_leaf]{validate_leaf()}}).
 }
 
 \examples{

@@ -1,27 +1,52 @@
-#' LeafInjuryR: quantification of visual leaf injury patterns
+#' LeafInjuryR: Quantification of Visual Leaf Injury from Digital Images
 #'
-#' Classical, auditable image processing for the percentage of injured leaf
-#' area, with six public functions:
+#' LeafInjuryR estimates the percentage of injured leaf area in RGB
+#' photographs of leaves. All processing runs locally on your computer.
 #'
-#' | Function | Purpose |
-#' |---|---|
-#' | [analyze_leaf()] | single-image analysis |
-#' | [analyze_leaf_batch()] | batch analysis with HTML, Excel and CSV reports |
-#' | [crop_leaf()] | automatic and manual cropping |
-#' | [segment_leaf()] | automatic and manually corrected segmentation |
-#' | [validate_leaf()] | quality control and validation against reference masks |
-#' | [run_leafinjury_app()] | local Shiny interface |
+#' @details
+#' The analysis follows two steps. First, the leaf is separated from the
+#' background (leaf mask). Then, only the pixels inside the leaf are
+#' classified as healthy or injured. The injury percentage is the number of
+#' injured pixels divided by the number of leaf pixels, multiplied by 100.
 #'
-#' Leaf segmentation (which pixels are leaf) is always performed before, and
-#' separately from, tissue classification (which leaf pixels are healthy or
-#' injured). Injury (%) = injured pixels / leaf-mask pixels x 100.
+#' Main functions:
 #'
-#' **Scope.** The package quantifies visual colour patterns. It does not
-#' diagnose pathogens, diseases, nutritional deficiencies or phytotoxicity.
-#' Working software is not the same as a validated method: calibrate and
-#' validate against manual reference masks for your own imaging conditions.
+#' \itemize{
+#'   \item \code{\link{analyze_leaf}}: analyses a single image.
+#'   \item \code{\link{analyze_leaf_batch}}: analyses a folder of images and
+#'     creates HTML, Excel and CSV reports.
+#'   \item \code{\link{crop_leaf}}: crops the image automatically or manually.
+#'   \item \code{\link{segment_leaf}}: segments the leaf and its tissues, with
+#'     optional manual correction.
+#'   \item \code{\link{validate_leaf}}: checks quality and compares results with
+#'     reference masks.
+#'   \item \code{\link{run_leafinjury_app}}: opens the interactive interface.
+#' }
 #'
-#' **Privacy.** All processing is local; no telemetry or external services.
+#' Quick start:
 #'
-#' @keywords internal
-"_PACKAGE"
+#' \preformatted{
+#' library(LeafInjuryR)
+#' img <- system.file("extdata", "leaf_example_01.jpg", package = "LeafInjuryR")
+#' res <- analyze_leaf(img, crop = "auto")
+#' res
+#' plot(res)
+#' }
+#'
+#' Scope: the package measures visible colour patterns. It does not diagnose
+#' diseases, pathogens, nutritional deficiencies or phytotoxicity. Validate the
+#' method with reference masks under your own imaging conditions.
+#'
+#' @seealso
+#' Useful links:
+#' \itemize{
+#'   \item \url{https://github.com/wilhanvalasco/LeafInjuryR}
+#'   \item Report bugs at \url{https://github.com/wilhanvalasco/LeafInjuryR/issues}
+#'   \item Homepage: \url{https://wilhanvalasco.github.io/LeafInjuryR/}
+#' }
+#'
+#' @author Wilhan Valasco dos Santos \email{wilhanvalasco@hotmail.com}
+#'
+#' @name LeafInjuryR
+#' @keywords package
+NULL

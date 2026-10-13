@@ -7,7 +7,7 @@
 run_leafinjury_app(launch.browser = TRUE, port = NULL, max_upload_mb = 200)
 }
 \arguments{
-\item{launch.browser}{Passed to [shiny::runApp()].}
+\item{launch.browser}{Passed to \code{\link[shiny:runApp]{shiny::runApp()}}.}
 
 \item{port}{Optional port.}
 
