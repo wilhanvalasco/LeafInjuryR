@@ -1,6 +1,12 @@
-^.*\.Rproj$
-^\.Rproj\.user$
-^LeafInjuryR\.Rproj$
-^DEVELOPMENT_REPORT\.md$
-^check\.log$
-^check_cran\.log$
+^.*[.]Rproj$
+^[.]Rproj[.]user$
+^[.]Rhistory$
+^[.]DS_Store$
+^README[.]html$
+^Data base$
+^results$
+^[.]git$
+^renv$
+^DEVELOPMENT_REPORT[.]md$
+^check[.]log$
+^check_cran[.]log$

@@ -1,8 +1,8 @@
 Package: LeafInjuryR
 Type: Package
 Title: Quantification of Visual Leaf Injury Patterns from Digital Images
-Version: 0.2.0
-Date: 2026-10-10
+Version: 0.2.1
+Date: 2026-10-18
 Authors@R:
     person(
         given = c("Wilhan", "Valasco"),
@@ -31,7 +31,7 @@ License: GPL (>= 3)
 Encoding: UTF-8
 Language: en-US
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.2.0)
 Imports:
     EBImage,
     base64enc,

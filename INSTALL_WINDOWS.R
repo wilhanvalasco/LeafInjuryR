@@ -1,0 +1,8 @@
+# LeafInjuryR installation helper for Windows (run in a fresh R session)
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+install.packages(c("BiocManager", "remotes"))
+BiocManager::install("EBImage", ask = FALSE, update = FALSE)
+install.packages(c("shiny", "bslib", "DT"))
+remotes::install_github("wilhanvalasco/LeafInjuryR", dependencies = NA, upgrade = "never")
+library(LeafInjuryR)
+run_leafinjury_app()

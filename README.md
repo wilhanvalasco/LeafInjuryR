@@ -13,7 +13,7 @@
   <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&logo=r&logoColor=white" alt="R >= 4.2"></a>
   <a href="https://bioconductor.org/packages/EBImage/"><img src="https://img.shields.io/badge/Bioconductor-EBImage-87B13F?style=flat-square" alt="EBImage"></a>
   <a href="https://shiny.posit.co/"><img src="https://img.shields.io/badge/Shiny-app-1F65CC?style=flat-square" alt="Shiny"></a>
-  <img src="https://img.shields.io/badge/version-0.2.0-19A765?style=flat-square" alt="version 0.2.0">
+  <img src="https://img.shields.io/badge/version-0.2.1-19A765?style=flat-square" alt="version 0.2.0">
   <img src="https://img.shields.io/badge/license-GPL--3-44545A?style=flat-square" alt="GPL-3">
 </p>
 
@@ -85,14 +85,28 @@ LeafInjuryR depends on [EBImage](https://bioconductor.org/packages/EBImage/),
 distributed through Bioconductor. Install it first, then the package from GitHub.
 
 ```r
+# Restart R/RStudio before installing (especially on Windows).
 install.packages(c("BiocManager", "remotes"))
 
-BiocManager::install("EBImage")
-remotes::install_github("wilhanvalasco/LeafInjuryR")
+# Avoid updating unrelated packages or packages currently in use.
+BiocManager::install("EBImage", ask = FALSE, update = FALSE)
 
-# Optional: packages used by the Shiny app
+# Install the package and its mandatory dependencies only.
+remotes::install_github(
+  "wilhanvalasco/LeafInjuryR",
+  dependencies = NA,
+  upgrade = "never"
+)
+
+# Optional: install the graphical interface dependencies.
 install.packages(c("shiny", "bslib", "DT"))
+
+library(LeafInjuryR)
+run_leafinjury_app()
 ```
+
+On Windows, if a package DLL is locked (for example `cli.dll`), close all R sessions and restart RStudio before retrying. The message `Installation paths not writeable` may refer to the system R library under `Program Files`; installing to your personal R library normally avoids administrator access. Do not select `a` to update all packages when prompted.
+
 
 <br>
 
