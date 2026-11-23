@@ -360,10 +360,10 @@ GPL (>= 3)
 <br>
 
 <div align="center">
-  <img src="man/figures/Baida.png" alt="Walter Baida Garcia Coutinho" width="230">
+  <img src="man/figures/Baida.png?v=2" alt="Walter Baida Garcia Coutinho" width="230">
   <p><sub><b>A U T H O R</b></sub></p>
   <h1>WALTER BAIDA GARCIA COUTINHO</h1>
-  <p><i>Co-author of LeafInjuryR.</i></p>
+  <p><i>Author of LeafInjuryR.</i></p>
   <p><sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub></p>
   <p>Department of Statistics, Federal University of Viçosa (UFV)<br>Viçosa, Minas Gerais, Brazil</p>
   <p>
