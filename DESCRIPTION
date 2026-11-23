@@ -1,15 +1,9 @@
 Package: LeafInjuryR
 Type: Package
 Title: Quantification of Visual Leaf Injury Patterns from Digital Images
-<<<<<<< HEAD
-Version: 0.2.1
-Date: 2026-10-18
-Authors@R:
-=======
 Version: 0.2.2
 Date: 2026-11-23
 Authors@R: c(
->>>>>>> e4db154 (Update LeafInjuryR to v0.2.2 - CRAN corrections)
     person(
         given = c("Wilhan", "Valasco"),
         family = "dos Santos",
