@@ -13,11 +13,7 @@
   <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&logo=r&logoColor=white" alt="R >= 4.2"></a>
   <a href="https://bioconductor.org/packages/EBImage/"><img src="https://img.shields.io/badge/Bioconductor-EBImage-87B13F?style=flat-square" alt="EBImage"></a>
   <a href="https://shiny.posit.co/"><img src="https://img.shields.io/badge/Shiny-app-1F65CC?style=flat-square" alt="Shiny"></a>
-<<<<<<< HEAD
-  <img src="https://img.shields.io/badge/version-0.2.1-19A765?style=flat-square" alt="version 0.2.0">
-=======
   <img src="https://img.shields.io/badge/version-0.2.2-19A765?style=flat-square" alt="version 0.2.2">
->>>>>>> e4db154 (Update LeafInjuryR to v0.2.2 - CRAN corrections)
   <img src="https://img.shields.io/badge/license-GPL--3-44545A?style=flat-square" alt="GPL-3">
 </p>
 
@@ -90,20 +86,35 @@ distributed through Bioconductor. Install it first, then the package from GitHub
 
 ```r
 # Restart R/RStudio before installing (especially on Windows).
-install.packages(c("BiocManager", "remotes"))
+# Each step installs a package only if it is not already available.
 
-# Avoid updating unrelated packages or packages currently in use.
-BiocManager::install("EBImage", ask = FALSE, update = FALSE)
+# 1. Installation helpers
+for (pkg in c("BiocManager", "remotes")) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
 
-# Install the package and its mandatory dependencies only.
-remotes::install_github(
-  "wilhanvalasco/LeafInjuryR",
-  dependencies = NA,
-  upgrade = "never"
-)
+# 2. EBImage from Bioconductor, without updating other packages
+if (!requireNamespace("EBImage", quietly = TRUE)) {
+  BiocManager::install("EBImage", ask = FALSE, update = FALSE)
+}
 
-# Optional: install the graphical interface dependencies.
-install.packages(c("shiny", "bslib", "DT"))
+# 3. LeafInjuryR and its mandatory dependencies
+if (!requireNamespace("LeafInjuryR", quietly = TRUE)) {
+  remotes::install_github(
+    "wilhanvalasco/LeafInjuryR",
+    dependencies = NA,
+    upgrade = "never"
+  )
+}
+
+# 4. Optional: graphical interface dependencies
+for (pkg in c("shiny", "bslib", "DT")) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
 
 library(LeafInjuryR)
 run_leafinjury_app()
@@ -315,7 +326,7 @@ classification methods, thresholds, crop, scale and any manual corrections.
 citation("LeafInjuryR")
 ```
 
-Package authors: Wilhan Valasco dos Santos (author, maintainer) and
+Package authors: Wilhan Valasco dos Santos (author and maintainer) and
 Walter Baida Garcia Coutinho (author).
 
 ## License
@@ -349,13 +360,16 @@ GPL (>= 3)
 <br>
 
 <div align="center">
+  <img src="man/figures/Baida.png" alt="Walter Baida Garcia Coutinho" width="230">
   <p><sub><b>A U T H O R</b></sub></p>
-  <h2>WALTER BAIDA GARCIA COUTINHO</h2>
-  <p>Departamento de Estatística, Universidade Federal de Viçosa (UFV), Viçosa, Minas Gerais, Brazil</p>
+  <h1>WALTER BAIDA GARCIA COUTINHO</h1>
+  <p><i>Co-author of LeafInjuryR.</i></p>
+  <p><sub><b>A C A D E M I C &nbsp;&nbsp; P R O F I L E</b></sub></p>
+  <p>Department of Statistics, Federal University of Viçosa (UFV)<br>Viçosa, Minas Gerais, Brazil</p>
   <p>
-    <a href="https://orcid.org/0000-0002-9894-6122"><img src="https://img.shields.io/badge/ORCID-0000--0002--9894--6122-A6CE39?style=for-the-badge&logo=orcid&logoColor=white" alt="ORCID: 0000-0002-9894-6122"></a>
-    &nbsp;
     <a href="mailto:walterbgc1@gmail.com"><img src="https://img.shields.io/badge/Email-walterbgc1%40gmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: walterbgc1@gmail.com"></a>
+    &nbsp;
+    <a href="https://orcid.org/0000-0002-9894-6122"><img src="https://img.shields.io/badge/ORCID-0000--0002--9894--6122-1F2933?style=for-the-badge&logo=orcid&logoColor=A6CE39" alt="ORCID: 0000-0002-9894-6122"></a>
   </p>
 </div>
 
