@@ -9,7 +9,7 @@ image_data_uri <- function(image, max_dim = 560L, quality = 82L) {
   d <- dim(img)
   s <- min(1, max_dim / max(d[1:2]))
   if (s < 1) img <- EBImage::resize(img, w = max(1, round(d[1] * s)), h = max(1, round(d[2] * s)))
-  f <- tempfile(fileext = ".jpg"); on.exit(unlink(f))
+  f <- tempfile(fileext = ".jpg"); on.exit(unlink(f), add = TRUE)
   EBImage::writeImage(img, f, type = "jpeg", quality = quality)
   paste0("data:image/jpeg;base64,", base64enc::base64encode(f))
 }
@@ -93,7 +93,12 @@ write_leaf_reports <- function(x, dir, formats = c("html", "xlsx", "csv")) {
 #' Zip files (flat) into `zipfile`
 #' @noRd
 zip_files <- function(zipfile, files) {
-  old <- setwd(dirname(files[1])); on.exit(setwd(old))
+  # utils::zip() stores paths relative to the working directory, so the
+  # directory is changed temporarily and always restored (also on error).
+  # `zipfile` is made absolute first so it is not created inside `files`' folder.
+  zipfile <- file.path(normalizePath(dirname(zipfile), mustWork = TRUE), basename(zipfile))
+  old_wd <- setwd(dirname(files[1]))
+  on.exit(setwd(old_wd), add = TRUE)
   ok <- tryCatch({
     suppressWarnings(utils::zip(zipfile, files = basename(files), flags = "-q"))
     file.exists(zipfile)

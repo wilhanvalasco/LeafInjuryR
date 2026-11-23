@@ -29,7 +29,7 @@ draw_leaf_view <- function(view, xlim = NULL, ylim = NULL, grid = FALSE, rect = 
   xlim <- xlim %||% c(0.5, d[1] + 0.5)
   ylim <- ylim %||% c(0.5, d[2] + 0.5)
   op <- graphics::par(mar = c(0, 0, 0, 0), bg = bg, xaxs = "i", yaxs = "i")
-  on.exit(graphics::par(op))
+  on.exit(graphics::par(op), add = TRUE)
   graphics::plot.new()
   graphics::plot.window(xlim = xlim, ylim = rev(ylim), asp = 1)
   graphics::rasterImage(view$raster, 0.5, d[2] + 0.5, d[1] + 0.5, 0.5, interpolate = TRUE)

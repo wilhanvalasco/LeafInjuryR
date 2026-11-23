@@ -13,7 +13,11 @@
   <a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.2-276DC3?style=flat-square&logo=r&logoColor=white" alt="R >= 4.2"></a>
   <a href="https://bioconductor.org/packages/EBImage/"><img src="https://img.shields.io/badge/Bioconductor-EBImage-87B13F?style=flat-square" alt="EBImage"></a>
   <a href="https://shiny.posit.co/"><img src="https://img.shields.io/badge/Shiny-app-1F65CC?style=flat-square" alt="Shiny"></a>
+<<<<<<< HEAD
   <img src="https://img.shields.io/badge/version-0.2.1-19A765?style=flat-square" alt="version 0.2.0">
+=======
+  <img src="https://img.shields.io/badge/version-0.2.2-19A765?style=flat-square" alt="version 0.2.2">
+>>>>>>> e4db154 (Update LeafInjuryR to v0.2.2 - CRAN corrections)
   <img src="https://img.shields.io/badge/license-GPL--3-44545A?style=flat-square" alt="GPL-3">
 </p>
 
@@ -25,7 +29,7 @@
   <a href="#how-it-works">How it works</a> &nbsp;&nbsp;
   <a href="#validation">Validation</a> &nbsp;&nbsp;
   <a href="#citation">Citation</a> &nbsp;&nbsp;
-  <a href="#author">Author</a>
+  <a href="#authors">Authors</a>
 </p>
 
 <br>
@@ -311,13 +315,16 @@ classification methods, thresholds, crop, scale and any manual corrections.
 citation("LeafInjuryR")
 ```
 
+Package authors: Wilhan Valasco dos Santos (author, maintainer) and
+Walter Baida Garcia Coutinho (author).
+
 ## License
 
 GPL (>= 3)
 
 <br>
 
-## Author
+## Authors
 
 <br>
 
@@ -331,11 +338,24 @@ GPL (>= 3)
     <img src="man/figures/academic-profile.svg" width="100%" alt="Academic profile: PhD Candidate in Biotechnology and Biodiversity (IF Goiano); Master's degree in Plant Protection (IF Goiano); Bachelor's degree in Agronomy (IF Goiano); Specialist in Data Science (FMSP); MBA in Business Management (IF Goiano)">
   </p>
   <p>
-    <a href="mailto:wilhan.santos@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhan.santos%40hotmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: wilhan.santos@hotmail.com"></a>
+    <a href="mailto:wilhanvalasco@hotmail.com"><img src="https://img.shields.io/badge/Email-wilhanvalasco%40hotmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: wilhanvalasco@hotmail.com"></a>
     &nbsp;
     <a href="https://wa.me/5564992862039"><img src="https://img.shields.io/badge/WhatsApp-%2B55%2064%2099286--2039-1F2933?style=for-the-badge&logo=whatsapp&logoColor=25D366" alt="WhatsApp: +55 64 99286-2039"></a>
     &nbsp;
     <a href="https://github.com/wilhanvalasco"><img src="https://img.shields.io/badge/GitHub-wilhanvalasco-1F2933?style=for-the-badge&logo=github&logoColor=white" alt="GitHub: wilhanvalasco"></a>
+  </p>
+</div>
+
+<br>
+
+<div align="center">
+  <p><sub><b>A U T H O R</b></sub></p>
+  <h2>WALTER BAIDA GARCIA COUTINHO</h2>
+  <p>Departamento de Estatística, Universidade Federal de Viçosa (UFV), Viçosa, Minas Gerais, Brazil</p>
+  <p>
+    <a href="https://orcid.org/0000-0002-9894-6122"><img src="https://img.shields.io/badge/ORCID-0000--0002--9894--6122-A6CE39?style=for-the-badge&logo=orcid&logoColor=white" alt="ORCID: 0000-0002-9894-6122"></a>
+    &nbsp;
+    <a href="mailto:walterbgc1@gmail.com"><img src="https://img.shields.io/badge/Email-walterbgc1%40gmail.com-19A765?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email: walterbgc1@gmail.com"></a>
   </p>
 </div>
 

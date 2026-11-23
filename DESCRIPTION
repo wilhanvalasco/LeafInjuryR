@@ -1,15 +1,29 @@
 Package: LeafInjuryR
 Type: Package
 Title: Quantification of Visual Leaf Injury Patterns from Digital Images
+<<<<<<< HEAD
 Version: 0.2.1
 Date: 2026-10-18
 Authors@R:
+=======
+Version: 0.2.2
+Date: 2026-11-23
+Authors@R: c(
+>>>>>>> e4db154 (Update LeafInjuryR to v0.2.2 - CRAN corrections)
     person(
         given = c("Wilhan", "Valasco"),
         family = "dos Santos",
         email = "wilhanvalasco@hotmail.com",
-        role = c("aut", "cre", "cph")
-    )
+        role = c("aut", "cre", "cph"),
+        comment = c(ORCID = "0000-0002-6533-2407")
+    ),
+    person(
+        given = c("Walter", "Baida", "Garcia"),
+        family = "Coutinho",
+        email = "walterbgc1@gmail.com",
+        role = "aut",
+        comment = c(ORCID = "0000-0002-9894-6122")
+    ))
 Description: Provides an image-processing workflow for quantifying visual
     leaf injury from digital RGB photographs. The workflow includes
     leaf-background segmentation, classification of healthy and injured
@@ -26,7 +40,16 @@ Description: Provides an image-processing workflow for quantifying visual
     with processing parameters recorded to support reproducibility.
     The package quantifies visible injury patterns but does not diagnose
     pathogens, diseases, nutritional disorders, or phytotoxicity.
-    All image processing is performed locally.
+    All image processing is performed locally. Leaf-background
+    segmentation uses Otsu thresholds (Otsu (1979)
+    <doi:10.1109/TSMC.1979.4310076>) on CIELAB chroma and darkness
+    features, followed by morphological filtering and connected-component
+    labeling (Rosenfeld and Pfaltz (1966) <doi:10.1145/321356.321357>;
+    Soille (2003) <doi:10.1007/978-3-662-05088-0>). Alternative
+    segmentation and tissue classification rules based on the excess green
+    and excess green minus excess red color indices follow Woebbecke et
+    al. (1995) <doi:10.13031/2013.27838> and Meyer and Neto (2008)
+    <doi:10.1016/j.compag.2008.03.009>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Language: en-US

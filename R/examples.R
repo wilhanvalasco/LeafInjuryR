@@ -49,12 +49,8 @@ make_synthetic_leaf <- function(width = 120L, height = 90L, necrotic_radius = 8,
     arr[, , ch] <- layer
   }
   if (noise > 0) {
-    has_seed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
-    old <- if (has_seed) get(".Random.seed", envir = globalenv(), inherits = FALSE) else NULL
-    set.seed(seed)
-    arr <- arr + stats::rnorm(length(arr), 0, noise)
-    if (has_seed) assign(".Random.seed", old, envir = globalenv())
-    else rm(".Random.seed", envir = globalenv())
+    # with_seed() restores the caller's RNG state on exit, also on error
+    arr <- arr + with_seed(seed, stats::rnorm(length(arr), 0, noise))
     arr[arr < 0] <- 0; arr[arr > 1] <- 1
   }
   list(image = as_color_image(arr), leaf_mask = leaf, injury_mask = necro | chlor,

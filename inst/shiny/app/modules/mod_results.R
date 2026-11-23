@@ -57,8 +57,9 @@ mod_results_server <- function(id, rv) {
       validate(need(any(ok), "Sem an\u00e1lises conclu\u00eddas."))
       r <- r[ok, ]; o <- order(r$injured_percent); r <- r[o, ]
       cols <- ifelse(r$quality_flag == "ok", "#4C9A6A", "#D9A441")
-      par(mar = c(4, max(6, min(16, max(nchar(r$file)) * 0.5)), 1, 2), family = "sans",
-          col.axis = "#4A554F", fg = "#C9CFCB")
+      oldpar <- par(mar = c(4, max(6, min(16, max(nchar(r$file)) * 0.5)), 1, 2), family = "sans",
+                    col.axis = "#4A554F", fg = "#C9CFCB")
+      on.exit(par(oldpar), add = TRUE)
       if (isTRUE(r$multiclass[1]) && nrow(r) == 1) {
         vals <- stats::setNames(c(r$healthy_percent, r$chlorotic_percent, r$necrotic_percent, r$other_percent),
                                 c("Saud\u00e1vel", "Clor\u00f3tico", "Necr\u00f3tico", "Outro"))
@@ -124,6 +125,7 @@ mod_results_server <- function(id, rv) {
       x <- src(); req(x)
       if (inherits(x, "leaf_batch") && length(x$report_files)) return(x$output_dir)
       d <- tempfile("lir_report_"); dir.create(d)
+      register_session_cleanup(d)
       .lir$write_leaf_reports(x, d)
       if (inherits(x, "leaf_analysis")) {
         dir.create(file.path(d, "masks")); dir.create(file.path(d, "overlays"))

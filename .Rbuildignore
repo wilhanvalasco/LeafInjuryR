@@ -10,3 +10,14 @@
 ^DEVELOPMENT_REPORT[.]md$
 ^check[.]log$
 ^check_cran[.]log$
+<<<<<<< HEAD
+=======
+^.*\.Rproj$
+^\.Rproj\.user$
+^INSTALL_WINDOWS[.]R$
+^_config[.]yml$
+^_layouts$
+^_pkgdown[.]yml$
+^index[.]md$
+^man/figures/Wilhan[.]png$
+>>>>>>> e4db154 (Update LeafInjuryR to v0.2.2 - CRAN corrections)

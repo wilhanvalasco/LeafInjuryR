@@ -121,6 +121,7 @@ mod_analysis_server <- function(id, rv, vh, settings, goto) {
       if (!length(files)) { showNotification("Selecione imagens ou um arquivo ZIP.", type = "warning"); return() }
       s <- settings(); n <- length(files); failed <- 0
       out_dir <- tempfile("lir_batch_")
+      register_session_cleanup(out_dir)
       withProgress(message = "Processando lote", value = 0, {
         cb <- function(i, n, file, status) {
           if (!identical(status, "ok")) failed <<- failed + 1
@@ -172,7 +173,7 @@ mod_analysis_server <- function(id, rv, vh, settings, goto) {
     observeEvent(input$inspect, {
       req(rv$batch); i <- selected()
       f <- rv$batch_files[i]
-      im <- tryCatch(LeafInjuryR:::read_leaf(f), error = function(e) NULL); req(im)
+      im <- tryCatch(.lir$read_leaf(f), error = function(e) NULL); req(im)
       md <- attr(im, "leaf_metadata"); md$filename <- basename(f); attr(im, "leaf_metadata") <- md
       rv$original <- im; rv$name <- basename(f); rv$path <- f; rv$img_version <- rv$img_version + 1
       rv$cropped <- im; rv$crop_mode <- "none"; rv$crop_version <- rv$crop_version + 1

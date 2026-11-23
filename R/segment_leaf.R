@@ -171,7 +171,7 @@ print.leaf_segmentation <- function(x, ...) {
 
 #' @export
 plot.leaf_segmentation <- function(x, ...) {
-  op <- graphics::par(mfrow = c(1, 2)); on.exit(graphics::par(op))
+  op <- graphics::par(mfrow = c(1, 2)); on.exit(graphics::par(op), add = TRUE)
   plot_leaf_image(x$leaf_mask, main = "Leaf mask")
   plot_leaf_image(class_map_to_image(x$class_map, x$multiclass), main = "Classification")
   invisible(x)

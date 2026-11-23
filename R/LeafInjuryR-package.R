@@ -45,7 +45,17 @@
 #'   \item Homepage: \url{https://wilhanvalasco.github.io/LeafInjuryR/}
 #' }
 #'
-#' @author Wilhan Valasco dos Santos \email{wilhanvalasco@hotmail.com}
+#' @author
+#' \strong{Maintainer}: Wilhan Valasco dos Santos
+#'   \email{wilhanvalasco@hotmail.com}
+#'   (\href{https://orcid.org/0000-0002-6533-2407}{ORCID})
+#'
+#' Authors:
+#' \itemize{
+#'   \item Wilhan Valasco dos Santos (author, maintainer, copyright holder)
+#'   \item Walter Baida Garcia Coutinho \email{walterbgc1@gmail.com}
+#'     (\href{https://orcid.org/0000-0002-9894-6122}{ORCID}) (author)
+#' }
 #'
 #' @name LeafInjuryR
 #' @keywords package

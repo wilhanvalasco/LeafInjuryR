@@ -35,11 +35,23 @@
 #' v$quality$quality_flag
 #' v$metrics   # NULL: no reference mask, no accuracy metrics
 #'
-#' # with a reference mask (here, the predicted mask itself, only to illustrate)
+#' # With a reference mask. Here, only to illustrate, the reference is the
+#' # predicted leaf mask placed back on the full original image using the
+#' # public crop record (`res$crop`): masks are [width, height] matrices and
+#' # `bbox` gives the crop limits in original pixel coordinates.
+#' bb <- res$crop$bbox
+#' od <- res$crop$original_dim
+#' ref_mask <- matrix(FALSE, nrow = od[1], ncol = od[2])
+#' ref_mask[bb["x_min"]:bb["x_max"], bb["y_min"]:bb["y_max"]] <- res$leaf_mask
+#'
+#' # reference supplied as a logical matrix ...
+#' validate_leaf(res, reference_leaf_mask = ref_mask)$metrics
+#'
+#' # ... or as a lossless PNG file (white = leaf), as drawn in an image editor
 #' ref <- tempfile(fileext = ".png")
-#' EBImage::writeImage(EBImage::Image(
-#'   1 * LeafInjuryR:::uncrop_mask(res$leaf_mask, res$crop)), ref)
+#' EBImage::writeImage(EBImage::Image(1 * ref_mask), ref)
 #' validate_leaf(res, reference_leaf_mask = ref)$metrics
+#' unlink(ref)
 #' @export
 validate_leaf <- function(x, reference_leaf_mask = NULL, reference_injury_mask = NULL,
                           injury_region = c("intersection", "reference_leaf")) {
@@ -116,7 +128,9 @@ plot.leaf_validation <- function(x, ...) {
     graphics::plot.new(); graphics::text(0.5, 0.5, x$note); return(invisible(x))
   }
   maps <- Filter(Negate(is.null), x$comparison[c("leaf", "injury")])
-  op <- graphics::par(mfrow = c(1, length(maps)), oma = c(2, 0, 0, 0)); on.exit(graphics::par(op))
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar), add = TRUE)
+  graphics::par(mfrow = c(1, length(maps)), oma = c(2, 0, 0, 0))
   cols <- validation_colors()
   for (nm in names(maps)) {
     plot_leaf_image(comparison_overlay(x$comparison$image, maps[[nm]]),

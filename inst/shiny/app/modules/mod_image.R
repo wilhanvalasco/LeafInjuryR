@@ -29,7 +29,7 @@ mod_image_ui <- function(id) {
 mod_image_server <- function(id, rv, vh) {
   moduleServer(id, function(input, output, session) {
     load_image <- function(path, name) {
-      im <- tryCatch(LeafInjuryR:::read_leaf(path), error = function(e) {
+      im <- tryCatch(.lir$read_leaf(path), error = function(e) {
         showNotification(conditionMessage(e), type = "error"); NULL })
       if (is.null(im)) return()
       md <- attr(im, "leaf_metadata"); md$filename <- name; attr(im, "leaf_metadata") <- md

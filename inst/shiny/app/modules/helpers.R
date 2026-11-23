@@ -1,7 +1,28 @@
 # Shared UI pieces and application state (presentation only; no analysis logic)
 
+# Single, explicit access point to the package's own internal helpers. The app
+# is part of LeafInjuryR (inst/shiny/app) and is launched by
+# run_leafinjury_app(); all internal calls go through `.lir$` (no triple-colon calls).
 .lir <- asNamespace("LeafInjuryR")
 `%||%` <- function(a, b) if (is.null(a)) b else a
+
+# Evaluate plotting code with temporary graphical parameters; the previous
+# values are restored on exit, also when the code fails.
+with_par <- function(pars, code) {
+  oldpar <- graphics::par(pars)
+  on.exit(graphics::par(oldpar), add = TRUE)
+  force(code)
+}
+
+# Remove a temporary file/folder created for this browser session when the
+# session ends (keeps sessions isolated and does not accumulate files in
+# tempdir() during long-running servers).
+register_session_cleanup <- function(path, session = shiny::getDefaultReactiveDomain()) {
+  if (!is.null(session)) {
+    session$onSessionEnded(function() unlink(path, recursive = TRUE, force = TRUE))
+  }
+  invisible(path)
+}
 
 # Named choices built with setNames(): labels written as argument names would
 # be converted to the native encoding by the R parser (breaks accents outside
@@ -101,7 +122,7 @@ viewer_ui <- function(ns, id, toolbar_left = NULL, badge = TRUE, click = TRUE, b
       if (badge) uiOutput(ns(paste0(id, "_badge")), class = "lir-badge-wrap")))
 }
 
-# view_fn: reactive returning a display raster (LeafInjuryR:::display_raster) or NULL
+# view_fn: reactive returning a display raster (.lir$display_raster) or NULL
 # extra_fn: optional function drawing on top (e.g. crop rectangle)
 viewer_server <- function(id, input, output, session, view_fn, vh, extra_fn = NULL,
                           empty_text = "Carregue uma fotografia na \u00e1rea Imagem.") {
@@ -135,8 +156,10 @@ viewer_server <- function(id, input, output, session, view_fn, vh, extra_fn = NU
   output[[id]] <- renderPlot({
     v <- view_fn()
     if (is.null(v)) {
-      par(mar = c(0, 0, 0, 0)); plot.new()
-      text(0.5, 0.5, empty_text, col = "#8A948E", cex = 1.05)
+      with_par(list(mar = c(0, 0, 0, 0)), {
+        plot.new()
+        text(0.5, 0.5, empty_text, col = "#8A948E", cex = 1.05)
+      })
       return(invisible())
     }
     .lir$draw_leaf_view(v, st$xlim, st$ylim, grid = st$grid,
@@ -168,6 +191,7 @@ compare_slider <- function(left_uri, right_uri, left_label = "Original", right_l
 # Read uploaded images (or ZIP archives) into a staging folder, keeping names
 stage_uploads <- function(paths, names) {
   d <- tempfile("lir_upload_"); dir.create(d)
+  register_session_cleanup(d)
   for (i in seq_along(paths)) {
     if (grepl("\\.zip$", names[i], ignore.case = TRUE)) utils::unzip(paths[i], exdir = d)
     else file.copy(paths[i], file.path(d, names[i]))
@@ -176,8 +200,14 @@ stage_uploads <- function(paths, names) {
 }
 
 # Zip a directory keeping its sub-folders
+# utils::zip() stores paths relative to the working directory, so it is changed
+# temporarily and restored on exit (also on error). `zipfile` is made absolute
+# first. Shiny runs callbacks sequentially within one R process, so the
+# temporary change does not overlap with other sessions' code.
 zip_dir <- function(zipfile, dir) {
-  old <- setwd(dir); on.exit(setwd(old))
+  zipfile <- file.path(normalizePath(dirname(zipfile), mustWork = TRUE), basename(zipfile))
+  old_wd <- setwd(dir)
+  on.exit(setwd(old_wd), add = TRUE)
   utils::zip(zipfile, files = list.files(".", recursive = TRUE), flags = "-q")
   file.exists(zipfile)
 }

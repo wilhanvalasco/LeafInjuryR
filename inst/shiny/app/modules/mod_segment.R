@@ -71,7 +71,7 @@ mod_segment_server <- function(id, rv, vh) {
 
     work_arr <- reactive({
       req(rv$seg_auto)
-      LeafInjuryR:::as_rgb_array(rv$seg_auto$normalized %||% rv$cropped)
+      .lir$as_rgb_array(rv$seg_auto$normalized %||% rv$cropped)
     })
 
     # Automatic segmentation, recomputed only when image, crop or settings change

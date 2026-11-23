@@ -56,9 +56,21 @@ v <- validate_leaf(res)
 v$quality$quality_flag
 v$metrics   # NULL: no reference mask, no accuracy metrics
 
-# with a reference mask (here, the predicted mask itself, only to illustrate)
+# With a reference mask. Here, only to illustrate, the reference is the
+# predicted leaf mask placed back on the full original image using the
+# public crop record (`res$crop`): masks are [width, height] matrices and
+# `bbox` gives the crop limits in original pixel coordinates.
+bb <- res$crop$bbox
+od <- res$crop$original_dim
+ref_mask <- matrix(FALSE, nrow = od[1], ncol = od[2])
+ref_mask[bb["x_min"]:bb["x_max"], bb["y_min"]:bb["y_max"]] <- res$leaf_mask
+
+# reference supplied as a logical matrix ...
+validate_leaf(res, reference_leaf_mask = ref_mask)$metrics
+
+# ... or as a lossless PNG file (white = leaf), as drawn in an image editor
 ref <- tempfile(fileext = ".png")
-EBImage::writeImage(EBImage::Image(
-  1 * LeafInjuryR:::uncrop_mask(res$leaf_mask, res$crop)), ref)
+EBImage::writeImage(EBImage::Image(1 * ref_mask), ref)
 validate_leaf(res, reference_leaf_mask = ref)$metrics
+unlink(ref)
 }

@@ -60,7 +60,7 @@ plot.leaf_method_comparison <- function(x, alpha = 0.5, ...) {
   k <- length(x$masks) + 1L
   nc <- min(3L, k); nr <- ceiling(k / nc)
   op <- graphics::par(mfrow = c(nr, nc))
-  on.exit(graphics::par(op))
+  on.exit(graphics::par(op), add = TRUE)
   plot_leaf_image(x$image, main = "Original")
   for (m in names(x$masks)) {
     cm <- x$masks[[m]] * 1L

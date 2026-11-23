@@ -1,3 +1,25 @@
+# LeafInjuryR 0.2.2
+
+CRAN resubmission addressing the comments of the review of version 0.2.1.
+Analysis results are unchanged.
+
+- `DESCRIPTION`: references for the implemented methods (Otsu thresholding,
+  connected-component labeling, mathematical morphology, excess green and
+  excess green minus excess red color indices) added to the `Description`
+  field.
+- `DESCRIPTION`: Walter Baida Garcia Coutinho added as author.
+- `validate_leaf()` example: the reference mask is now rebuilt from the
+  public crop record (`res$crop`) instead of calling an internal function.
+- The validation vignette builds its synthetic image with public code only.
+- Graphical parameters, options and the working directory are always
+  restored with `on.exit(..., add = TRUE)`, including in the Shiny
+  application (`inst/shiny/app/modules/helpers.R`, `mod_results.R`).
+- Shiny application: temporary folders are removed when the browser
+  session ends; internal helpers are reached through a single documented
+  access point instead of the triple-colon operator.
+- New regression tests for mask reconstruction, validation metrics and
+  restoration of global state.
+
 # LeafInjuryR 0.2.0
 
 This release introduces a streamlined public API, an improved image-processing workflow, a redesigned interactive interface, and expanded validation, reporting and reproducibility features.

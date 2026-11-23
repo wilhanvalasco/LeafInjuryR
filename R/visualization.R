@@ -112,7 +112,7 @@ plot_leaf_image <- function(image, main = NULL, axes = FALSE, ...) {
   ras <- grDevices::as.raster(aperm(arr, c(2, 1, 3)))
   op <- graphics::par(mar = c(if (axes) 2 else 0.2, if (axes) 2 else 0.2,
                               if (is.null(main)) 0.2 else 1.6, 0.2))
-  on.exit(graphics::par(op))
+  on.exit(graphics::par(op), add = TRUE)
   graphics::plot.new()
   graphics::plot.window(xlim = c(0.5, d[1] + 0.5), ylim = c(d[2] + 0.5, 0.5),
                         asp = 1, xaxs = "i", yaxs = "i")
@@ -130,12 +130,17 @@ plot_leaf_image <- function(image, main = NULL, axes = FALSE, ...) {
 #' @param ... Unused.
 #' @return `x`, invisibly.
 #' @examples
-#' res <- analyze_leaf(system.file("extdata", "leaf_example_01.jpg", package = "LeafInjuryR"), crop = "auto")
+#' example_file <- system.file(
+#'   "extdata",
+#'   "leaf_example_01.jpg",
+#'   package = "LeafInjuryR"
+#' )
+#' res <- analyze_leaf(example_file, crop = "auto")
 #' plot(res)
 #' @export
 plot.leaf_analysis <- function(x, ...) {
   op <- graphics::par(mfrow = c(2, 2))
-  on.exit(graphics::par(op))
+  on.exit(graphics::par(op), add = TRUE)
   plot_leaf_image(x$cropped, main = "Original")
   plot_leaf_image(x$leaf_mask, main = "Leaf mask")
   plot_leaf_image(class_map_to_image(x$class_map, x$parameters$multiclass),
